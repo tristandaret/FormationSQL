@@ -1,0 +1,23 @@
+Summaries
+.DS_Store
+# LaTeX auxiliary files to ignore (keep .tex and .pdf)
+*.aux
+*.log
+*.toc
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.synctex
+*.fdb_latexmk
+*.fls
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.lof
+*.lot
+*.bcf
+*.xdv
+_minted-*/
+*.pyg

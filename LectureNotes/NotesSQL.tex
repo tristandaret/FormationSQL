@@ -1,0 +1,1090 @@
+\documentclass[10pt]{beamer}
+\usetheme{Madrid}
+
+% Packages
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{setspace}
+
+% Custom purple color scheme
+\definecolor{maincolor}{RGB}{200,100,0}
+\definecolor{secondcolor}{RGB}{0,150,200}
+\setbeamercolor{palette primary}{bg=maincolor,fg=white}
+\setbeamercolor{palette secondary}{bg=maincolor!80,fg=white}
+\setbeamercolor{palette tertiary}{bg=maincolor!60,fg=white}
+\setbeamercolor{palette quaternary}{bg=maincolor!40,fg=black}
+\setbeamercolor{structure}{fg=secondcolor}
+\setbeamercolor{frametitle}{bg=maincolor,fg=white}
+\setbeamercolor{title}{bg=maincolor,fg=white}
+
+% Reduce the header width
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+    \begin{beamercolorbox}[sep=1ex,wd=\paperwidth,leftskip=.5cm,rightskip=0cm]{frametitle}%
+      \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\\
+      \usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle
+    \end{beamercolorbox}%
+}
+
+
+
+% Do not use nagivation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Section frame template
+\newcommand{\sectionframe}{
+   {
+   \setbeamercolor{background canvas}{bg=maincolor}
+   \begin{frame}[plain]
+      \raggedright
+      \vspace*{0.2\paperheight}
+      \hspace{1cm}
+      \parbox{0.8\paperwidth}{
+         \raggedright
+         \begin{spacing}{2.5}
+            \textcolor{white}{\Huge\bfseries\insertsection}
+         \end{spacing}
+      }
+   \end{frame}
+   }
+}
+
+% SQL syntax highlighting
+\lstset{
+   language=SQL,
+   basicstyle=\ttfamily\footnotesize,
+   keywordstyle=\color{secondcolor}\bfseries,
+   stringstyle=\color{red},
+   commentstyle=\color{green!50!black}\itshape,
+   showstringspaces=false,
+   breaklines=true,
+   frame=single,
+   numbers=left,
+   numberstyle=\tiny\color{gray}
+}
+
+% Title information
+\title{SQL: My Notes}
+\subtitle{Databases and SQL for Data Science with Python}
+\author{Tristan Daret}
+\date{\today}
+
+\begin{document}
+
+% Title frame
+\frame{\titlepage}
+
+% Table of contents
+\begin{frame}{Table of Contents}
+   \hspace{1cm}
+   \begin{minipage}{0.9\textwidth}
+      \setstretch{2}
+      \large
+      \tableofcontents
+   \end{minipage}
+\end{frame}
+
+\section{SQL Commands Cheatsheet}
+\sectionframe
+\begin{frame}{SQL Commands Reference - Part 1}
+   \centering
+   \setstretch{1.2}
+   \begingroup
+   \fontsize{6}{7.5}\selectfont
+   \begin{tabularx}{\textwidth}{|l|l|X|}
+     \hline
+     \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
+     \hline
+     \multicolumn{3}{|c|}{\textbf{Data Query Language (DQL)}} \\
+     \hline
+     SELECT & Table & Retrieve data from database tables \\
+     WHERE & Rows & Filter rows based on conditions \\
+     COUNT & Rows & Count number of rows \\
+     DISTINCT & Rows & Return unique values only \\
+     LIMIT & Result set & Restrict number of rows returned \\
+     OFFSET & Result set & Skip a specified number of rows \\
+     \hline
+     \multicolumn{3}{|c|}{\textbf{Data Manipulation Language (DML)}} \\
+     \hline
+     INSERT & Rows & Add new rows to a table \\
+     UPDATE & Rows & Modify existing rows \\
+     DELETE & Rows & Remove rows from a table \\
+     SET & Columns & Specify column values in UPDATE \\
+     \hline
+   \end{tabularx}
+   \endgroup
+\end{frame}
+
+\begin{frame}{SQL Commands Reference - Part 2}
+   \centering
+   \setstretch{1.2}
+   \begingroup
+   \fontsize{6}{7.5}\selectfont
+   \begin{tabularx}{\textwidth}{|l|l|X|}
+     \hline
+     \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
+     \hline
+     \multicolumn{3}{|c|}{\textbf{Data Definition Language (DDL)}} \\
+     \hline
+     CREATE & Table/DB & Create new database objects (tables, etc.) \\
+     ALTER & Table & Modify structure of existing objects \\
+     ADD & Column & Add new columns to existing table \\
+     DROP & Table/DB & Delete database objects permanently \\
+     TRUNCATE & Table & Remove all rows from table (keep structure) \\
+     RENAME & Table/Column & Rename tables or columns \\
+     MODIFY & Column & Change column definition (ALTER variant) \\
+     \hline
+     \multicolumn{3}{|c|}{\textbf{Constraints \& Options}} \\
+     \hline
+     NOT NULL & Column & Column must have a value (no NULL) \\
+     PRIMARY KEY & Column & Unique identifier for each row \\
+     FOREIGN KEY & Column & Link to PRIMARY KEY in another table \\
+     \hline
+   \end{tabularx}
+   \endgroup
+\end{frame}
+
+\section{SQL Key concepts}
+\sectionframe
+\begin{frame}{Database keys}
+   \begin{block}{Primary Key}
+      \begin{itemize}
+         \item \textbf{Uniquely identifies} each row in a table
+         \item Analogy: Like a particle's unique quantum state identifier
+         \item Must be NOT NULL and UNIQUE
+         \item Only ONE primary key per table
+      \end{itemize}
+   \end{block}
+   
+   \begin{block}{Foreign Key}
+      \begin{itemize}
+         \item Column(s) that \textbf{reference} a Primary Key in another table
+         \item Analogy: Like conservation laws linking different processes
+         \item Enforces \textbf{referential integrity}
+         \item Can have multiple foreign keys in one table
+         \item Prevents orphaned records
+      \end{itemize}
+   \end{block}
+\end{frame}
+
+\begin{frame}{Integrity Constraints}
+   \begin{scriptsize}
+   \begin{columns}[T]
+      \begin{column}{0.46\textwidth}
+         \begin{block}{Entity Integrity}
+            \textbf{Purpose:} Guarantees each row is uniquely identifiable
+            \begin{itemize}
+               \item Enforced via PRIMARY KEY constraint
+               \item No NULL values allowed in primary key
+               \item Prevents duplicate entities in table
+               \item Example: Each particle has unique ID
+            \end{itemize}
+         \end{block}
+         
+         \vspace{1em}
+         \begin{block}{Domain Constraints}
+            \textbf{Purpose:} Restrict values to valid domain/range
+            \begin{itemize}
+               \item Data type enforcement (INT, VARCHAR, DATE, etc.)
+               \item NOT NULL: requires a value
+               \item CHECK: custom conditions (e.g., mass > 0)
+               \item UNIQUE: no duplicates allowed
+               \item DEFAULT: provides fallback value
+            \end{itemize}
+         \end{block}
+         
+      \end{column}
+      \hspace{1em}
+      \begin{column}{0.46\textwidth}
+         \begin{block}{Referential Integrity}
+            \textbf{Purpose:} Maintains consistency between related tables
+            \begin{itemize}
+               \item FOREIGN KEY references PRIMARY KEY in parent table
+               \item Cannot insert orphaned records (child without parent)
+               \item Cascade actions: ON DELETE/UPDATE CASCADE, SET NULL, RESTRICT
+               \item Example: Experiment must reference existing particle
+            \end{itemize}
+         \end{block}
+         
+         \vspace{1em}
+         
+         \begin{alertblock}{Key points}
+               These three constraint types work together to ensure data quality, consistency, and validity throughout the database.
+         \end{alertblock}
+      \end{column}
+   \end{columns}
+   \end{scriptsize}
+\end{frame}
+
+\begin{frame}{SQL statement categories}
+   \begin{scriptsize}
+   \begin{columns}[T]
+      \begin{column}{0.46\textwidth}
+         \begin{block}{DDL - Data Definition Language}
+            Defines and modifies database \textbf{structure}
+            \begin{itemize}
+              \item CREATE, ALTER, DROP, TRUNCATE
+              \item Schema operations
+              \item Usually \textbf{irreversible}
+            \end{itemize}
+         \end{block}
+      \vspace{1em}
+      \begin{block}{DQL - Data Query Language}
+         Retrieves data from database
+         \begin{itemize}
+            \item SELECT (with WHERE, JOIN, etc.)
+            \item Read-only operations
+            \item No data modification
+         \end{itemize}
+      \end{block}
+     \end{column}
+
+      \hspace*{2em}
+
+      \begin{column}{0.46\textwidth}
+      \begin{block}{DML - Data Manipulation Language}
+         Manipulates the \textbf{data} within structures
+         \begin{itemize}
+            \item INSERT, UPDATE, DELETE
+            \item Data operations
+            \item Can be rolled back
+         \end{itemize}
+      \end{block}
+      \vspace{1em}
+      \begin{block}{DCL - Data Control Language}
+         Controls access and permissions
+         \begin{itemize}
+            \item GRANT, REVOKE
+            \item User permissions
+            \item Security management
+         \end{itemize}
+      \end{block}
+       \end{column}
+   \end{columns}
+   \end{scriptsize}
+\end{frame}
+
+\section{Data Query Language (DQL)}
+\sectionframe
+\begin{frame}[fragile]{SELECT - Retrieve Data}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT column1, column2, ...
+FROM table_name;
+
+-- All columns
+SELECT *
+FROM table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT particle_name, mass
+FROM particles;
+
+-- All data
+SELECT *
+FROM particles;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} The fundamental query command - retrieves data from one or more tables.
+   
+   \textbf{Note:} SELECT * can be inefficient for large tables - specify only needed columns.
+\end{frame}
+
+\begin{frame}[fragile]{WHERE - Filter Rows}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+-- Multiple conditions
+WHERE condition1 
+  AND condition2
+  OR condition3;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT particle_name
+FROM particles
+WHERE mass > 100;
+
+-- Combined
+WHERE charge = 0
+  AND spin = 0.5;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Filters rows based on specified conditions (like applying selection cuts in analysis).
+   
+   \textbf{Operators:} =, <, >, <=, >=, <>, AND, OR, NOT, IN, LIKE, BETWEEN
+\end{frame}
+
+\begin{frame}[fragile]{Pattern Matching - LIKE and Wildcards}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      	\textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Basic LIKE patterns
+WHERE col LIKE 'abc%'    -- starts with 'abc'
+WHERE col LIKE '%xyz'    -- ends with 'xyz'
+WHERE col LIKE '%mid%'   -- contains 'mid'
+WHERE col LIKE 'h_m'     -- h + any single char + m
+
+-- Escape literal % or _
+WHERE col LIKE '50\%%' ESCAPE '\'
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      	\textbf{Wildcards:}
+      \begin{itemize}
+         \item \% : any sequence of characters (including empty)
+         \item \_ : exactly one character
+         \item Use ESCAPE to treat wildcard characters literally
+         \item ILIKE (PostgreSQL) : case-insensitive LIKE
+      \end{itemize}
+   \end{columns}
+
+   \vspace{1em}
+   	\textbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+SELECT name FROM particles
+WHERE name LIKE 'mu%';
+
+SELECT name FROM particles
+WHERE name ILIKE '%on%'; -- PostgreSQL
+   \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Advanced Patterns - Regex and Performance}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      	\textbf{Regex Syntax (DB-specific):}
+      \begin{lstlisting}[numbers=none]
+-- MySQL
+WHERE col REGEXP '^A[0-9]{3}$'
+
+-- PostgreSQL
+WHERE col ~ '^[A-Z]{2}[0-9]+$'
+WHERE col ~* 'pattern'  -- case-insensitive
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      	\textbf{Performance Notes:}
+      \begin{itemize}
+         \item Leading \% (e.g., '%term') prevents index use
+         \item Prefer 'prefix%' patterns to leverage indexes
+         \item Regex is more flexible but usually slower than LIKE
+         \item For repeated workloads consider indexed/generated columns
+      \end{itemize}
+   \end{columns}
+   \vspace{1em}
+   	\textbf{Use cases:} validation, structured codes, exploratory substring search.
+\end{frame}
+
+\begin{frame}[fragile]{Range Selection - BETWEEN}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      	extbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Inclusive range
+WHERE col BETWEEN low AND high
+
+-- Equivalent
+WHERE col >= low AND col <= high
+
+-- Exclude range
+WHERE col NOT BETWEEN low AND high
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      	extbf{Notes:}
+      \begin{itemize}
+         \item `BETWEEN` is inclusive of both endpoints
+         \item Works for numbers, dates, and strings (DB-specific ordering)
+         \item For exclusive bounds use `>`/`<` explicitly
+      \end{itemize}
+   \end{columns}
+
+   \vspace{1em}
+   	extbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+SELECT * FROM experiments
+WHERE mass BETWEEN 10 AND 100;
+
+-- Date range
+SELECT * FROM experiments
+WHERE start_date BETWEEN '2020-01-01' AND '2020-12-31';
+   \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Set Selection - IN and Subqueries}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      	extbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Match any value in the list
+WHERE col IN (val1, val2, ...)
+
+-- Using a subquery
+WHERE col IN (SELECT id FROM allowed_ids)
+
+-- Negation
+WHERE col NOT IN (val1, val2)
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      	extbf{Notes:}
+      \begin{itemize}
+         \item `IN` is shorthand for multiple ORs
+         \item Subquery must return a single column
+         \item Beware `NULL` with `NOT IN` (can yield no rows) -- prefer `NOT EXISTS`
+      \end{itemize}
+   \end{columns}
+
+   \vspace{1em}
+   	extbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+SELECT name FROM particles
+WHERE charge IN (-1, 0, 1);
+
+SELECT * FROM results
+WHERE experiment_id IN (
+  SELECT id FROM experiments WHERE status = 'active'
+);
+   \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{COUNT - Count Rows}
+   \vspace*{-1.5em}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT COUNT(column_name)
+FROM table_name;
+
+-- Count all rows
+SELECT COUNT(*)
+FROM table_name;
+
+-- With condition
+SELECT COUNT(*)
+FROM table_name
+WHERE condition;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT COUNT(particle_id)
+FROM particles;
+
+-- All particles
+SELECT COUNT(*)
+FROM particles;
+
+-- Neutral particles
+SELECT COUNT(*)
+FROM particles
+WHERE charge = 0;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Returns the number of rows (like counting events in a detector).
+   
+   \textbf{Note:} COUNT(*) includes NULL values; COUNT(column) excludes NULLs.
+\end{frame}
+
+\begin{frame}[fragile]{DISTINCT - Unique Values}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT column1
+FROM table_name;
+
+-- Multiple columns
+SELECT DISTINCT 
+   column1, column2
+FROM table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT charge
+FROM particles;
+
+-- Unique combinations
+SELECT DISTINCT 
+   charge, spin
+FROM particles;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Returns only unique values, eliminating duplicates.
+   
+   \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
+\end{frame}
+
+\begin{frame}[fragile]{LIMIT - Restrict Result Set}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT column1, column2
+FROM table_name
+LIMIT number;
+
+-- With ORDER BY
+SELECT column1
+FROM table_name
+ORDER BY column1
+LIMIT number;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT particle_name
+FROM particles
+LIMIT 10;
+
+-- Top 5 heaviest
+SELECT particle_name
+FROM particles
+ORDER BY mass DESC
+LIMIT 5;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Restricts the number of rows returned (useful for large datasets).
+   
+   \textbf{Note:} Without ORDER BY, which rows are returned is undefined. Different syntax in some databases (TOP in SQL Server).
+\end{frame}
+
+\begin{frame}[fragile]{OFFSET - Skip Rows}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT column1, column2
+FROM table_name
+LIMIT number
+OFFSET skip_count;
+
+-- Alternative syntax
+SELECT column1
+FROM table_name
+LIMIT skip_count, number;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT particle_name
+FROM particles
+LIMIT 10
+OFFSET 20;
+
+-- Skip first 20,
+-- return next 10
+-- (rows 21-30)
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Skips specified number of rows before returning results (pagination).
+   
+   \textbf{Note:} Often used with LIMIT for pagination. OFFSET 0 returns from the first row.
+\end{frame}
+
+% Section 5: Data Manipulation Language
+\section{Data Manipulation Language (DML)}
+\sectionframe
+\begin{frame}[fragile]{INSERT - Add New Rows}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+INSERT INTO table_name 
+   (col1, col2, ...)
+VALUES 
+   (val1, val2, ...);
+
+-- Multiple rows
+INSERT INTO table_name 
+VALUES 
+   (val1, val2),
+   (val3, val4);
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+INSERT INTO particles
+   (name, mass, charge)
+VALUES 
+   ('electron', 0.511, -1);
+
+-- Multiple
+INSERT INTO particles
+VALUES 
+   ('muon', 105.7, -1),
+   ('tau', 1776.9, -1);
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Adds new rows of data to a table.
+   
+   \textbf{Warning:} Must satisfy all constraints (PRIMARY KEY, NOT NULL, etc.).
+\end{frame}
+
+\begin{frame}[fragile]{UPDATE - Modify Existing Rows}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+UPDATE table_name
+SET column1 = value1,
+   column2 = value2
+WHERE condition;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+UPDATE particles
+SET mass = 0.511
+WHERE name = 'electron';
+
+-- Multiple columns
+UPDATE particles
+SET mass = 105.658,
+   spin = 0.5
+WHERE name = 'muon';
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Modifies existing data in a table.
+   
+   \textbf{WARNING:} Without WHERE clause, \textbf{ALL rows will be updated}! Always test with SELECT first.
+\end{frame}
+
+\begin{frame}[fragile]{SET - Assign Values (UPDATE)}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+UPDATE table_name
+SET column1 = value1,
+   column2 = value2,
+   column3 = expression
+WHERE condition;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+UPDATE experiments
+SET status = 'complete',
+   end_date = CURDATE(),
+   duration = 365
+WHERE exp_id = 42;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} SET is not standalone - it's the clause in UPDATE that specifies which columns to modify and their new values.
+   
+   \textbf{Note:} Can use expressions, functions, or values from other columns.
+\end{frame}
+
+\begin{frame}[fragile]{DELETE - Remove Rows}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+DELETE FROM table_name
+WHERE condition;
+
+-- Delete all rows
+DELETE FROM table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+DELETE FROM particles
+WHERE mass < 0.001;
+
+-- Remove all data
+-- (structure remains)
+DELETE FROM temp_data;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Removes rows from a table permanently.
+   
+   \textbf{WARNING:} Without WHERE, \textbf{ALL rows deleted}! Cannot delete if foreign key constraints are violated. Use TRUNCATE for faster full-table deletion.
+\end{frame}
+
+% Section 6: Data Definition Language
+\section{Data Definition Language (DDL)}
+\sectionframe
+\begin{frame}[fragile]{CREATE - Build New Objects}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+CREATE TABLE table_name (
+   column1 datatype,
+   column2 datatype,
+   column3 datatype,
+   PRIMARY KEY (column1)
+);
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+CREATE TABLE particles (
+   particle_id INT,
+   name VARCHAR(50),
+   mass DECIMAL(10,3),
+   charge INT,
+   PRIMARY KEY (particle_id)
+);
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Creates new database objects (tables, databases, indexes, etc.).
+   
+   \textbf{Note:} Define structure carefully - changing it later requires ALTER. Common datatypes: INT, VARCHAR, DECIMAL, DATE, BOOLEAN.
+\end{frame}
+
+\begin{frame}[fragile]{ADD - Add Columns to Table}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+ALTER TABLE table_name
+ADD column_name datatype;
+
+-- With constraints
+ALTER TABLE table_name
+ADD column_name datatype
+   constraint;
+
+-- Multiple columns
+ALTER TABLE table_name
+ADD column1 datatype1,
+ADD column2 datatype2;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+ALTER TABLE particles
+ADD spin DECIMAL(3,1);
+
+-- With NOT NULL
+ALTER TABLE particles
+ADD mass DECIMAL(10,3)
+   NOT NULL;
+
+-- Multiple columns
+ALTER TABLE particles
+ADD color VARCHAR(20),
+ADD discovered DATE;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{0.3cm}
+   \textbf{Description:} Adds new columns to an existing table without affecting existing data.
+   
+   \textbf{Note:} New column is added with NULL values for existing rows (unless DEFAULT specified). Cannot add NOT NULL without DEFAULT on non-empty tables.
+\end{frame}
+
+\begin{frame}[fragile]{ALTER - Modify Table Structure}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Add column
+ALTER TABLE table_name
+ADD column_name datatype;
+
+-- Drop column
+ALTER TABLE table_name
+DROP COLUMN column_name;
+
+-- Modify column
+ALTER TABLE table_name
+MODIFY column_name datatype;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+-- Add spin column
+ALTER TABLE particles
+ADD spin DECIMAL(3,1);
+
+-- Remove old column
+ALTER TABLE particles
+DROP COLUMN old_field;
+
+-- Change type
+ALTER TABLE particles
+MODIFY mass FLOAT;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Modifies the structure of an existing table.
+   
+   \textbf{Warning:} Can cause data loss if not careful (e.g., reducing column size).
+\end{frame}
+
+\begin{frame}[fragile]{DROP - Delete Objects Permanently}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+DROP TABLE table_name;
+
+DROP DATABASE database_name;
+
+-- With safety check
+DROP TABLE IF EXISTS 
+   table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+DROP TABLE temp_results;
+
+DROP DATABASE test_db;
+
+-- Safe version
+DROP TABLE IF EXISTS 
+   old_particles;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Permanently deletes database objects (table, database, index, etc.). Can be used before a fresh CREATE.
+   
+   \textbf{WARNING:} \textbf{IRREVERSIBLE!} All data AND structure are destroyed. Cannot drop if foreign keys reference it. Use IF EXISTS to avoid errors.
+\end{frame}
+
+\begin{frame}[fragile]{TRUNCATE - Empty Table Fast}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+TRUNCATE TABLE table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+TRUNCATE TABLE temp_events;
+
+-- Faster than:
+-- DELETE FROM temp_events;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Removes ALL rows from a table, but keeps the structure intact. Much faster than DELETE for large tables.
+   
+   \textbf{Warning:} Cannot be rolled back in most databases. Resets AUTO\_INCREMENT counters. May fail if foreign key constraints exist.
+\end{frame}
+
+\begin{frame}[fragile]{RENAME - Rename Database Objects}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Rename table
+ALTER TABLE old_name
+RENAME TO new_name;
+
+-- Or (MySQL/MariaDB)
+RENAME TABLE old_name 
+   TO new_name;
+
+-- Rename column (MySQL)
+ALTER TABLE table_name
+RENAME COLUMN old_col 
+   TO new_col;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+-- Rename table
+ALTER TABLE temp_particles
+RENAME TO particles_backup;
+
+-- MySQL shorthand
+RENAME TABLE old_data
+   TO archive_data;
+
+-- Rename column
+ALTER TABLE particles
+RENAME COLUMN mass 
+   TO particle_mass;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{0.3cm}
+   \textbf{Description:} Changes the name of database objects (tables, columns) without affecting data or structure.
+   
+   \textbf{Note:} Syntax varies by database system. Update all references (views, stored procedures, application code) after renaming. Foreign keys typically remain valid.
+\end{frame}
+
+\begin{frame}[fragile]{MODIFY - Change Column Definition}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- MySQL/Oracle
+ALTER TABLE table_name
+MODIFY column_name 
+   new_datatype;
+
+-- PostgreSQL/SQL Server
+ALTER TABLE table_name
+ALTER COLUMN column_name
+   TYPE new_datatype;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+-- MySQL
+ALTER TABLE particles
+MODIFY mass 
+   DECIMAL(15,5);
+
+-- PostgreSQL
+ALTER TABLE particles
+ALTER COLUMN mass
+   TYPE DOUBLE PRECISION;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Part of ALTER TABLE - changes a column's datatype or constraints.
+   
+   \textbf{Note:} Syntax varies by database system. May fail if existing data incompatible with new type.
+\end{frame}
+
+\begin{frame}[fragile]{IMMEDIATE - Constraint Checking Mode}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- DB2/Some systems
+SET CONSTRAINTS ALL
+   IMMEDIATE;
+
+-- vs DEFERRED
+SET CONSTRAINTS ALL
+   DEFERRED;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SET CONSTRAINTS ALL
+   IMMEDIATE;
+
+INSERT INTO particles
+VALUES (1, 'test', 0, 0);
+-- Constraints checked
+-- immediately
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Controls when constraint checking occurs. IMMEDIATE = check after each statement; DEFERRED = check at transaction end.
+   
+   \textbf{Note:} Not supported in all database systems (mainly DB2, Oracle). Useful for complex multi-table operations.
+\end{frame}
+
+% Section 7: Constraints
+\section{Constraints \& Optional Parameters}
+\sectionframe
+\begin{frame}[fragile]{NOT NULL - Require Values}
+   \begin{small}
+   \vspace*{-1em}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+CREATE TABLE table_name (
+   column1 datatype NOT NULL,
+   column2 datatype,
+   column3 datatype NOT NULL
+);
+
+-- Add to existing
+ALTER TABLE table_name
+MODIFY column_name 
+   datatype NOT NULL;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+CREATE TABLE particles (
+   id INT NOT NULL,
+   name VARCHAR(50) NOT NULL,
+   mass DECIMAL(10,3),
+   charge INT NOT NULL
+);
+
+-- Make mandatory
+ALTER TABLE particles
+MODIFY name 
+   VARCHAR(50) NOT NULL;
+      \end{lstlisting}
+   \end{columns}
+\end{small}
+   
+      
+      \textbf{Description:} Constraint that prevents NULL values in a column - the column must have a value.
+      
+      \textbf{Note:} Primary keys are automatically NOT NULL. Essential for critical fields like identifiers.
+\end{frame}
+
+\end{document}

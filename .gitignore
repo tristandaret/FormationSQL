@@ -1,6 +1,10 @@
+# Copyrighted summaries found online
 Summaries
+
+# macOS system files
 .DS_Store
-# LaTeX auxiliary files to ignore (keep .tex and .pdf)
+
+# LaTeX auxiliary files
 *.aux
 *.log
 *.toc

@@ -45,7 +45,8 @@
    \begingroup
    \setbeamercolor{background canvas}{bg=maincolor}
    \hypersetup{linkcolor=white} 
-   \begin{frame}[plain]
+   % ---------------------------------------------------------------------------------------
+\begin{frame}[plain]
       \raggedright
       \vspace*{0.2\paperheight}
       \hspace{1cm}
@@ -83,6 +84,7 @@
 \frame{\titlepage}
 
 % Table of contents
+% ---------------------------------------------------------------------------------------
 \begin{frame}{Table of Contents}
    \hspace{1cm}
    \begin{minipage}{0.9\textwidth}
@@ -95,6 +97,7 @@
 \section{SQL Commands Cheatsheet}
 \sectionframe
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL Commands Reference - DQL}
    \large{\textcolor{secondcolor}{\textbf{DQL}} $\Rightarrow$ Data Query Language}
    \vskip 1em
@@ -128,6 +131,7 @@
    \end{tabularx}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL Commands Reference - DML}
    \large{\textcolor{secondcolor}{\textbf{DML}} $\Rightarrow$ Data Manipulation Language}
    \vskip 1em
@@ -144,6 +148,7 @@
    \end{tabularx}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL Commands Reference - DDL}
    \large{\textcolor{secondcolor}{\textbf{DDL}} $\Rightarrow$ Data Definition Language}
    \vskip 1em
@@ -165,6 +170,7 @@
    \end{tabularx}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL Commands Reference - DCL}
    \large{\textcolor{secondcolor}{\textbf{DCL}} $\Rightarrow$ Data Control Language}
    \vskip 1em
@@ -179,6 +185,7 @@
    \end{tabularx}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL Commands Reference - Constraints \& Options}
    \setstretch{1.2}
    \begin{tabularx}{\textwidth}{|l|l|X|}
@@ -197,6 +204,7 @@
 
 \section{SQL Key concepts}
 \sectionframe
+% ---------------------------------------------------------------------------------------
 \begin{frame}{Database keys}
 \label{frm:dbkeys}
    \begin{block}{Primary Key}
@@ -219,6 +227,7 @@
    \end{block}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{Integrity Constraints}
 \label{frm:constraints}
    \begin{scriptsize}
@@ -269,6 +278,7 @@
    \end{scriptsize}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}{SQL statement categories}
    \begin{scriptsize}
    \begin{columns}[T]
@@ -319,6 +329,7 @@
 
 \section{Data Query Language (DQL)}
 \sectionframe
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{SELECT - Retrieve Data}
 \label{frm:select}
    \begin{columns}[T]
@@ -351,6 +362,150 @@ FROM particles;
    \textbf{Note:} SELECT * can be inefficient for large tables - specify only needed columns.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{DISTINCT - Unique Values}
+\label{frm:distinct}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT column1
+FROM table_name;
+
+-- Multiple columns
+SELECT DISTINCT 
+   column1, column2
+FROM table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT charge
+FROM particles;
+
+-- Unique combinations
+SELECT DISTINCT 
+   charge, spin
+FROM particles;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Returns only unique values, eliminating duplicates.
+   
+   \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Aliases - Rename Columns/Expressions}
+\label{frm:aliases}
+\fontsize{8}{9}\selectfont
+   \begin{columns}[T]
+      \column{0.48\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
+-- Column alias (AS optional)
+SELECT column AS alias_name
+FROM table_name;
+
+-- Table alias (shorten long names)
+SELECT t.column
+FROM very_long_table_name AS t;
+
+-- Alias for derived table (required)
+SELECT d.*
+FROM (
+   SELECT id, SUM(value) AS total
+   FROM measurements
+   GROUP BY id
+) AS d;
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Examples:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
+-- Rename expression
+SELECT CONCAT(first_name, ' ', last_name) AS full_name
+FROM people;
+
+-- Use alias in ORDER BY / GROUP BY
+SELECT product, SUM(qty) AS total_qty
+FROM sales
+GROUP BY product
+ORDER BY total_qty DESC;
+      \end{lstlisting}
+   \textbf{Notes:}
+   \begin{itemize}
+     \item AS is optional in many DBs: "SELECT col alias" works.
+     \item Use quotes/backticks for aliases with spaces or special chars.
+   \end{itemize}
+\end{columns}
+\begin{itemize}
+   \item Table aliases are mandatory for derived tables and helpful to disambiguate columns in joins.
+   \item Aliases are for the query result only -- they don't rename underlying schema objects.
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{FROM and JOINs - Table Sources}
+   \label{frm:joins}
+   \fontsize{7}{8}\selectfont
+   \begin{columns}[T]
+      \begin{column}{0.48\textwidth}
+         \textbf{Basic syntax / examples:}
+         \begin{lstlisting}[numbers=none, basicstyle=\ttfamily\fontsize{6}{7}\selectfont]
+   -- Simple source
+   FROM table_a
+
+   -- INNER JOIN (only matching rows)
+   FROM a
+   INNER JOIN b
+      ON a.id = b.a_id
+
+   -- LEFT / RIGHT / FULL outer joins
+   FROM a
+   LEFT JOIN b ON a.id = b.a_id
+
+   -- CROSS JOIN (cartesian product)
+   FROM a
+   CROSS JOIN b
+
+   -- USING (shorthand when column names match)
+   FROM a
+   JOIN b USING (id)
+
+   -- Derived table (see aliases slide)
+   FROM (
+      SELECT id, SUM(x) AS total
+      FROM measurements
+      GROUP BY id
+   ) AS d
+         \end{lstlisting}
+      \end{column}
+
+      \begin{column}{0.48\textwidth}
+         \textbf{Notes and semantics:}
+         \begin{itemize}
+            \item INNER JOIN: returns rows present in both tables (matches on ON/USING).
+            \item LEFT JOIN: all rows from left table; NULLs for non-matching right-side columns.
+            \item RIGHT / FULL JOIN: symmetric variants (FULL returns rows from either side).
+            \item CROSS JOIN: multiplies rows (use with care -- can blow up result size).
+            \item ON vs USING:
+            \begin{itemize}
+               \fontsize{7}{8}\selectfont
+               \item ON allows arbitrary join conditions (a.col = b.other\_col, complex expressions).
+               \item USING(column) is concise when join column names are identical; it coalesces the column in output.
+            \end{itemize}
+            \item Derived tables require an alias (see the aliases slide). Useful for pre-aggregating or hiding complexity.
+            \item Beware implicit joins (comma-separated FROM): they produce a cartesian product unless paired with WHERE conditions.
+            \item Performance: push filters into the earliest source possible (WHERE / ON) and prefer indexed join columns.
+         \end{itemize}
+      \end{column}
+   \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{WHERE - Filter Rows}
 \label{frm:where}
    \begin{columns}[T]
@@ -386,6 +541,130 @@ WHERE charge = 0
    \textbf{Operators:} \texttt{=}, \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}, \texttt{<>}, \texttt{AND}, \texttt{OR}, \texttt{NOT}, \texttt{IN}, \texttt{LIKE}, \texttt{BETWEEN}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Set Selection - IN and Subqueries}
+\label{frm:in}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Match any value in the list
+WHERE col IN (val1, val2, ...)
+
+-- Using a subquery
+WHERE col IN (SELECT id FROM allowed_ids)
+
+-- Negation
+WHERE col NOT IN (val1, val2)
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item \texttt{IN} is shorthand for multiple ORs
+         \item Subquery must return a single column
+         \item Beware \texttt{NULL} with \texttt{NOT IN} (can yield no rows) -- prefer \texttt{NOT EXISTS}
+      \end{itemize}
+   \end{columns}
+
+   \vspace{1em}
+   \textbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+SELECT name FROM particles
+WHERE charge IN (-1, 0, 1);
+
+SELECT * FROM results
+WHERE experiment_id IN (
+  SELECT id FROM experiments WHERE status = 'active'
+);
+   \end{lstlisting}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Range Selection - BETWEEN}
+\label{frm:between}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+-- Inclusive range
+WHERE col BETWEEN low AND high
+
+-- Equivalent
+WHERE col >= low AND col <= high
+
+-- Exclude range
+WHERE col NOT BETWEEN low AND high
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item \texttt{BETWEEN} is inclusive of both endpoints
+         \item Works for numbers, dates, and strings (DB-specific ordering)
+         \item For exclusive bounds use \texttt{>}/\texttt{<} explicitly
+      \end{itemize}
+   \end{columns}
+
+   \vspace{1em}
+   \textbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+SELECT * FROM experiments
+WHERE mass BETWEEN 10 AND 100;
+
+-- Date range
+SELECT * FROM experiments
+WHERE start_date BETWEEN '2020-01-01' AND '2020-12-31';
+   \end{lstlisting}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{NULLs and EXISTS}
+\label{frm:null_exists}
+\begin{columns}[T]
+   \column{0.48\textwidth}
+   \textbf{Syntax / Examples:}
+   \begin{lstlisting}[numbers=none]
+-- NULL checks
+WHERE col IS NULL;
+WHERE col IS NOT NULL;
+
+-- NULL-safe equality (PostgreSQL)
+WHERE col IS NOT DISTINCT FROM 'value';
+
+-- Coalesce to provide defaults
+WHERE COALESCE(col, 0) = 0;
+
+-- EXISTS: true if subquery returns any row
+WHERE EXISTS (
+  SELECT 1 FROM orders o
+  WHERE o.customer_id = c.id
+);
+
+-- Prefer NOT EXISTS over NOT IN when NULLs possible
+WHERE NOT EXISTS (
+  SELECT 1 FROM parents p
+  WHERE p.id = child.parent_id
+);
+   \end{lstlisting}
+
+   \column{0.48\textwidth}
+   \textbf{Notes and pitfalls:}
+   \begin{itemize}
+      \item Comparisons with NULL (e.g., col = NULL) yield UNKNOWN and are filtered out; use IS NULL / IS NOT NULL.
+      \item NOT IN with a subquery can return no rows if the subquery yields any NULLs:
+         WHERE x NOT IN (SELECT val FROM t)  -- dangerous if val contains NULL
+      \item NOT EXISTS is NULL-safe and recommended for exclusion by subquery.
+      \item Use COALESCE to substitute a default for NULL when appropriate (but be careful about semantics).
+      \item NULLs form their own group in GROUP BY and are ignored by many aggregates (except COUNT(*)).
+   \end{itemize}
+\end{columns}
+
+\vspace{0.8em}
+\textbf{Quick rule:} use IS NULL / IS NOT NULL for explicit NULL tests; prefer NOT EXISTS over NOT IN when subqueries may contain NULL.
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Pattern Matching - LIKE and Wildcards}
 \label{frm:like}
    \begin{columns}[T]
@@ -423,6 +702,7 @@ WHERE name ILIKE '%on%'; -- PostgreSQL
    \end{lstlisting}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Advanced Patterns - Regex and Performance}
 \label{frm:regex}
    \begin{columns}[T]
@@ -450,6 +730,7 @@ WHERE col ~* 'pattern'  -- case-insensitive
    	\textbf{Use cases:} validation, structured codes, exploratory substring search.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{String functions - Overview}
 \label{frm:stringfuncs}
    \begin{itemize}
@@ -490,6 +771,7 @@ WHERE LOWER(name) = 'alice';
    \end{columns}
 \end{frame}
  
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Modification - CONCAT / REPLACE / TRIM}
 \label{frm:modstring}
    \begin{columns}[T]
@@ -517,6 +799,7 @@ SELECT TRIM(name) FROM people; -- LTRIM / RTRIM available
    \end{columns}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{Locate / Search - POSITION / INSTR / CHARINDEX}
 \label{frm:locate}
    \begin{columns}[T]
@@ -541,116 +824,6 @@ SELECT CHARINDEX('sub', col) FROM t;
          \item These functions are cheap per-row but can be costly at scale if used without supporting indexes or precomputed columns.
       \end{itemize}
    \end{columns}
-\end{frame}
-
-\begin{frame}[fragile]{Range Selection - BETWEEN}
-\label{frm:between}
-   \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none]
--- Inclusive range
-WHERE col BETWEEN low AND high
-
--- Equivalent
-WHERE col >= low AND col <= high
-
--- Exclude range
-WHERE col NOT BETWEEN low AND high
-      \end{lstlisting}
-
-      \column{0.45\textwidth}
-      \textbf{Notes:}
-      \begin{itemize}
-         \item \texttt{BETWEEN} is inclusive of both endpoints
-         \item Works for numbers, dates, and strings (DB-specific ordering)
-         \item For exclusive bounds use \texttt{>}/\texttt{<} explicitly
-      \end{itemize}
-   \end{columns}
-
-   \vspace{1em}
-   \textbf{Examples:}
-   \begin{lstlisting}[numbers=none]
-SELECT * FROM experiments
-WHERE mass BETWEEN 10 AND 100;
-
--- Date range
-SELECT * FROM experiments
-WHERE start_date BETWEEN '2020-01-01' AND '2020-12-31';
-   \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Set Selection - IN and Subqueries}
-\label{frm:in}
-   \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none]
--- Match any value in the list
-WHERE col IN (val1, val2, ...)
-
--- Using a subquery
-WHERE col IN (SELECT id FROM allowed_ids)
-
--- Negation
-WHERE col NOT IN (val1, val2)
-      \end{lstlisting}
-
-      \column{0.45\textwidth}
-      \textbf{Notes:}
-      \begin{itemize}
-         \item \texttt{IN} is shorthand for multiple ORs
-         \item Subquery must return a single column
-         \item Beware \texttt{NULL} with \texttt{NOT IN} (can yield no rows) -- prefer \texttt{NOT EXISTS}
-      \end{itemize}
-   \end{columns}
-
-   \vspace{1em}
-   \textbf{Examples:}
-   \begin{lstlisting}[numbers=none]
-SELECT name FROM particles
-WHERE charge IN (-1, 0, 1);
-
-SELECT * FROM results
-WHERE experiment_id IN (
-  SELECT id FROM experiments WHERE status = 'active'
-);
-   \end{lstlisting}
-\end{frame}
-
-% ---------------------------------------------------------------------------------------
-\begin{frame}[fragile]{DISTINCT - Unique Values}
-\label{frm:distinct}
-   \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none]
-SELECT DISTINCT column1
-FROM table_name;
-
--- Multiple columns
-SELECT DISTINCT 
-   column1, column2
-FROM table_name;
-      \end{lstlisting}
-      
-      \column{0.45\textwidth}
-      \textbf{Example:}
-      \begin{lstlisting}[numbers=none]
-SELECT DISTINCT charge
-FROM particles;
-
--- Unique combinations
-SELECT DISTINCT 
-   charge, spin
-FROM particles;
-      \end{lstlisting}
-   \end{columns}
-   
-   \vspace{1em}
-   \textbf{Description:} Returns only unique values, eliminating duplicates.
-   
-   \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
 \end{frame}
 
 % ---------------------------------------------------------------------------------------
@@ -740,6 +913,7 @@ GROUP BY category;
    \end{columns}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{SUM - Total Values}
 \label{frm:sum}
    \begin{columns}[T]
@@ -769,6 +943,7 @@ SELECT SUM(COALESCE(quantity,0)) FROM sales;
    \end{columns}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{AVG - Averages}
 \label{frm:avg}
    \begin{columns}[T]
@@ -848,6 +1023,36 @@ GROUP BY GROUPING SETS ((col1, col2), (col1), ());
 \end{frame}
 
 % ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{HAVING - Filter Groups (vs WHERE)}
+\label{frm:having}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT category, COUNT(*) AS cnt
+FROM items
+GROUP BY category
+HAVING COUNT(*) > 10;
+
+-- Combining WHERE and HAVING
+SELECT user_id, SUM(amount) AS total
+FROM payments
+WHERE status = 'completed'   -- filters rows first
+GROUP BY user_id             -- then groups the filtered rows
+HAVING SUM(amount) > 1000;   -- filters groups by aggregate
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Key Differences:}
+      \begin{itemize}
+         \item WHERE filters raw rows before grouping
+         \item HAVING filters groups after aggregation
+         \item HAVING typically references aggregate functions
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{ORDER BY - Sort Results}
 \label{frm:orderby}
    \fontsize{7.5}{8}\selectfont
@@ -900,122 +1105,77 @@ ORDER BY partition_col, rn;
 \end{frame}
 
 % ---------------------------------------------------------------------------------------
-\begin{frame}[fragile]{Aliases - Rename Columns/Expressions}
-\label{frm:aliases}
-\fontsize{8}{9}\selectfont
-   \begin{columns}[T]
-      \column{0.48\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
--- Column alias (AS optional)
-SELECT column AS alias_name
-FROM table_name;
-
--- Table alias (shorten long names)
-SELECT t.column
-FROM very_long_table_name AS t;
-
--- Alias for derived table (required)
-SELECT d.*
-FROM (
-   SELECT id, SUM(value) AS total
-   FROM measurements
-   GROUP BY id
-) AS d;
-      \end{lstlisting}
-
-      \column{0.45\textwidth}
-      \textbf{Examples:}
-      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
--- Rename expression
-SELECT CONCAT(first_name, ' ', last_name) AS full_name
-FROM people;
-
--- Use alias in ORDER BY / GROUP BY
-SELECT product, SUM(qty) AS total_qty
-FROM sales
-GROUP BY product
-ORDER BY total_qty DESC;
-      \end{lstlisting}
-   \textbf{Notes:}
-   \begin{itemize}
-     \item AS is optional in many DBs: "SELECT col alias" works.
-     \item Use quotes/backticks for aliases with spaces or special chars.
-   \end{itemize}
-\end{columns}
-\begin{itemize}
-   \item Table aliases are mandatory for derived tables and helpful to disambiguate columns in joins.
-   \item Aliases are for the query result only -- they don't rename underlying schema objects.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{HAVING - Filter Groups (vs WHERE)}
-\label{frm:having}
-   \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none]
-SELECT category, COUNT(*) AS cnt
-FROM items
-GROUP BY category
-HAVING COUNT(*) > 10;
-
--- Combining WHERE and HAVING
-SELECT user_id, SUM(amount) AS total
-FROM payments
-WHERE status = 'completed'   -- filters rows first
-GROUP BY user_id             -- then groups the filtered rows
-HAVING SUM(amount) > 1000;   -- filters groups by aggregate
-      \end{lstlisting}
-
-      \column{0.45\textwidth}
-      \textbf{Key Differences:}
-      \begin{itemize}
-         \item WHERE filters raw rows before grouping
-         \item HAVING filters groups after aggregation
-         \item HAVING typically references aggregate functions
-      \end{itemize}
-   \end{columns}
-\end{frame}
-
-\begin{frame}[fragile]{LIMIT - Restrict Result Set}
+\begin{frame}[fragile]{LIMIT / TOP / FETCH - Restrict Result Set}
 \label{frm:limit}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
       \begin{lstlisting}[numbers=none]
+-- MySQL / SQLite / PostgreSQL (LIMIT)
 SELECT column1, column2
 FROM table_name
 LIMIT number;
 
--- With ORDER BY
-SELECT column1
+-- SQL Server (TOP)
+SELECT TOP (number) column1, column2
+FROM table_name;
+
+-- SQL Standard / SQL Server (OFFSET ... FETCH)
+SELECT column1, column2
 FROM table_name
-ORDER BY column1
-LIMIT number;
+ORDER BY some_col
+OFFSET skip_count ROWS
+FETCH NEXT number ROWS ONLY;
+
+-- SQL standard shorthand
+SELECT column1, column2
+FROM table_name
+FETCH FIRST number ROWS ONLY;
       \end{lstlisting}
       
       \column{0.45\textwidth}
-      \textbf{Example:}
-      \begin{lstlisting}[numbers=none]
-SELECT particle_name
-FROM particles
-LIMIT 10;
-
--- Top 5 heaviest
+      \textbf{Notes on semantics:}
+      \begin{itemize}
+         \item Use ORDER BY for deterministic results; otherwise which rows are returned is undefined.
+         \item TOP is a SQL Server (and some DB) extension; LIMIT and FETCH are more portable (FETCH is part of the SQL standard).
+         \item SQL Server also supports "TOP (n) PERCENT" and "WITH TIES" to include tied rows.
+         \item OFFSET ... FETCH provides pagination when combined with ORDER BY.
+      \end{itemize}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Examples:}
+   \begin{lstlisting}[numbers=none]
+-- LIMIT example (MySQL/Postgres)
 SELECT particle_name
 FROM particles
 ORDER BY mass DESC
 LIMIT 5;
-      \end{lstlisting}
-   \end{columns}
+
+-- TOP example (SQL Server)
+SELECT TOP (5) particle_name, mass
+FROM particles
+ORDER BY mass DESC;
+
+-- OFFSET / FETCH example (standard)
+SELECT particle_name
+FROM particles
+ORDER BY mass DESC
+OFFSET 20 ROWS
+FETCH NEXT 10 ROWS ONLY;  -- rows 21-30
+
+-- FETCH FIRST only
+SELECT particle_name
+FROM particles
+ORDER BY mass DESC
+FETCH FIRST 10 ROWS ONLY;
+   \end{lstlisting}
    
-   \vspace{1em}
-   \textbf{Description:} Restricts the number of rows returned (useful for large datasets).
-   
-   \textbf{Note:} Without ORDER BY, which rows are returned is undefined. Different syntax in some databases (TOP in SQL Server).
+   \vspace{0.5em}
+   \textbf{Description:} Restricts the number of rows returned (useful for large datasets and pagination). Prefer ORDER BY + FETCH/OFFSET for portable pagination; use TOP for SQL Server-specific queries.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{OFFSET - Skip Rows}
 \label{frm:offset}
    \begin{columns}[T]
@@ -1053,9 +1213,90 @@ OFFSET 20;
    \textbf{Note:} Often used with LIMIT for pagination. OFFSET 0 returns from the first row.
 \end{frame}
 
-% Section 5: Data Manipulation Language
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Set operations -- UNION / UNION ALL / INTERSECT / EXCEPT}
+\label{frm:setops}
+\fontsize{8}{9}\selectfont
+\begin{columns}[T]
+   \begin{column}{0.48\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- UNION: combine, remove duplicates
+SELECT id, name FROM table_a
+UNION
+SELECT id, name FROM table_b;
+
+-- UNION ALL: combine, keep duplicates (faster)
+SELECT id, name FROM table_a
+UNION ALL
+SELECT id, name FROM table_b;
+
+-- INTERSECT: rows present in both
+SELECT id, name FROM table_a
+INTERSECT
+SELECT id, name FROM table_b;
+
+-- EXCEPT (or MINUS): rows in left not in right
+SELECT id, name FROM table_a
+EXCEPT
+SELECT id, name FROM table_b;
+      \end{lstlisting}
+
+      \vspace{0.5em}
+      \textbf{Rules:}
+      \begin{itemize}
+         \item Each query must return the same number of columns with compatible types.
+         \item Result column names come from the first SELECT.
+         \item NULLs: treated consistently per DB implementation when comparing rows.
+      \end{itemize}
+   \end{column}
+
+   \begin{column}{0.48\textwidth}
+      \textbf{Behavior, ORDER BY and Notes:}
+      \begin{itemize}
+         \item ORDER BY applies to the final combined result. Put ORDER BY after the last query.
+         \item To order individual subqueries, wrap them as derived tables before combining.
+         \item UNION performs duplicate-elimination (like DISTINCT) -- requires sorting or hashing.
+         \item UNION ALL avoids deduplication and is much faster for simple concatenation.
+         \item INTERSECT / EXCEPT also usually require sort/hash; performance depends on indexes and cardinalities.
+         \item Alternatives: use JOIN/EXISTS/NOT EXISTS for finer control or sometimes better performance (especially for anti-joins).
+         \item Be explicit about intent: prefer UNION ALL when duplicates are acceptable or known absent.
+      \end{itemize}
+
+      \vspace{0.5em}
+      \textbf{Example: ORDERed final result}
+      \begin{lstlisting}[numbers=none]
+SELECT id, name FROM a
+UNION
+SELECT id, name FROM b
+ORDER BY name;
+      \end{lstlisting}
+   \end{column}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}{DQL Best Practices -- Performance \& Portability}
+\label{frm:dql_best_practices}
+\scriptsize
+\begin{itemize}
+   \item Project only the columns you need; transferring extra fields wastes I/O and memory.
+   \item Avoid wrapping indexed columns in expressions (e.g. case conversion or functions) -- this prevents index use. Create functional indexes or store normalized values when appropriate.
+   \item Make pagination deterministic by always specifying an explicit sort key; rely on stable ordering for consistent page results.
+   \item Be explicit about NULL semantics: test for presence/absence of values using dedicated checks and prefer existence-based exclusion patterns when subqueries may yield unknowns.
+   \item Push selective filters as early as possible so the planner can reduce data volume before expensive operations (joins, sorts, aggregates).
+   \item Use index-friendly patterns for string searches; leading wildcards or full regex scans can bypass indexes and degrade throughput.
+   \item Prefer set-aware operations over row-by-row loops; leverage built-in aggregation and windowing to let the engine optimize work.
+   \item Test and tune with the database's planning/analysis tools and representative data; measure cost and cardinality rather than guessing.
+   \item Remember portability differences (pagination, pattern-matching, case-insensitive operators, regex flavors). When writing cross-engine SQL, favor standard constructs or isolate engine-specific clauses behind adapters.
+   \item Use parameterized queries from application code to avoid parsing/plan instability and to improve security.
+\end{itemize}
+\end{frame}
+
+% Section: Data Manipulation Language
 \section{Data Manipulation Language (DML)}
 \sectionframe
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{INSERT - Add New Rows}
 \label{frm:insert}
    \begin{columns}[T]
@@ -1096,6 +1337,7 @@ VALUES
    \textbf{Warning:} Must satisfy all constraints (PRIMARY KEY, NOT NULL, etc.).
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{UPDATE - Modify Existing Rows}
 \label{frm:update}
    \begin{columns}[T]
@@ -1129,6 +1371,7 @@ WHERE name = 'muon';
    \textbf{WARNING:} Without WHERE clause, \textbf{ALL rows will be updated}! Always test with SELECT first.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{SET - Assign Values (UPDATE)}
 \label{frm:set}
    \begin{columns}[T]
@@ -1159,6 +1402,7 @@ WHERE exp_id = 42;
    \textbf{Note:} Can use expressions, functions, or values from other columns.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{DELETE - Remove Rows}
 \label{frm:delete}
    \begin{columns}[T]
@@ -1193,6 +1437,7 @@ DELETE FROM temp_data;
 % Section: Data Definition Language
 \section{Data Definition Language (DDL)}
 \sectionframe
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{CREATE - Build New Objects}
 \label{frm:create}
    \begin{columns}[T]
@@ -1226,6 +1471,7 @@ CREATE TABLE particles (
    \textbf{Note:} Define structure carefully - changing it later requires ALTER. Common datatypes: INT, VARCHAR, DECIMAL, DATE, BOOLEAN.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{ADD - Add Columns to Table}
 \label{frm:add}
    \begin{columns}[T]
@@ -1270,6 +1516,7 @@ ADD discovered DATE;
    \textbf{Note:} New column is added with NULL values for existing rows (unless DEFAULT specified). Cannot add NOT NULL without DEFAULT on non-empty tables.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{ALTER - Modify Table Structure}
 \label{frm:alter}
    \begin{columns}[T]
@@ -1312,6 +1559,7 @@ MODIFY mass FLOAT;
    \textbf{Warning:} Can cause data loss if not careful (e.g., reducing column size).
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{DROP - Delete Objects Permanently}
 \label{frm:drop}
    \begin{columns}[T]
@@ -1346,6 +1594,7 @@ DROP TABLE IF EXISTS
    \textbf{WARNING:} \textbf{IRREVERSIBLE!} All data AND structure are destroyed. Cannot drop if foreign keys reference it. Use IF EXISTS to avoid errors.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{TRUNCATE - Empty Table Fast}
 \label{frm:truncate}
    \begin{columns}[T]
@@ -1371,6 +1620,7 @@ TRUNCATE TABLE temp_events;
    \textbf{Warning:} Cannot be rolled back in most databases. Resets AUTO\_INCREMENT counters. May fail if foreign key constraints exist.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{RENAME - Rename Database Objects}
 \label{frm:rename}
    \begin{columns}[T]
@@ -1415,6 +1665,7 @@ RENAME COLUMN mass
    \textbf{Note:} Syntax varies by database system. Update all references (views, stored procedures, application code) after renaming. Foreign keys typically remain valid.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{MODIFY - Change Column Definition}
 \label{frm:modify}
    \begin{columns}[T]
@@ -1453,6 +1704,7 @@ ALTER COLUMN mass
    \textbf{Note:} Syntax varies by database system. May fail if existing data incompatible with new type.
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{IMMEDIATE - Constraint Checking Mode}
 \label{frm:setconstraints}
    \begin{columns}[T]
@@ -1490,6 +1742,7 @@ VALUES (1, 'test', 0, 0);
 % Section: Constraints
 \section{Constraints \& Optional Parameters}
 \sectionframe
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{NOT NULL - Require Values}
 \label{frm:notnull}
    \begin{small}

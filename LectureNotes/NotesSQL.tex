@@ -10,8 +10,9 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{setspace}
+\usepackage{hyperref}
 
-% Custom purple color scheme
+% Custom color scheme
 \definecolor{maincolor}{RGB}{200,100,0}
 \definecolor{secondcolor}{RGB}{0,150,200}
 \setbeamercolor{palette primary}{bg=maincolor,fg=white}
@@ -21,6 +22,10 @@
 \setbeamercolor{structure}{fg=secondcolor}
 \setbeamercolor{frametitle}{bg=maincolor,fg=white}
 \setbeamercolor{title}{bg=maincolor,fg=white}
+\setbeamercolor{section in toc}{fg=white}
+\setbeamercolor{subsection in toc}{fg=secondcolor}
+
+\hypersetup{colorlinks=true,linkcolor=secondcolor}
 
 % Reduce the header width
 \setbeamertemplate{frametitle}{%
@@ -31,27 +36,24 @@
     \end{beamercolorbox}%
 }
 
-
-
 % Do not use nagivation symbols
 \setbeamertemplate{navigation symbols}{}
 
 % Section frame template
 \newcommand{\sectionframe}{
-   {
+   \begingroup
    \setbeamercolor{background canvas}{bg=maincolor}
+   \hypersetup{linkcolor=white} 
    \begin{frame}[plain]
       \raggedright
       \vspace*{0.2\paperheight}
       \hspace{1cm}
       \parbox{0.8\paperwidth}{
          \raggedright
-         \begin{spacing}{2.5}
-            \textcolor{white}{\Huge\bfseries\insertsection}
-         \end{spacing}
+            \Huge\bfseries\insertsection
       }
    \end{frame}
-   }
+   \endgroup
 }
 
 % SQL syntax highlighting
@@ -85,73 +87,115 @@
    \begin{minipage}{0.9\textwidth}
       \setstretch{2}
       \large
-      \tableofcontents
+      \tableofcontents % No need to wrap this in \textcolor anymore
    \end{minipage}
 \end{frame}
 
 \section{SQL Commands Cheatsheet}
 \sectionframe
-\begin{frame}{SQL Commands Reference - Part 1}
-   \centering
+
+\begin{frame}{SQL Commands Reference - DQL}
+   \large{\textcolor{secondcolor}{\textbf{DQL}} $\Rightarrow$ Data Query Language}
+   \vskip 1em
    \setstretch{1.2}
-   \begingroup
    \fontsize{6}{7.5}\selectfont
    \begin{tabularx}{\textwidth}{|l|l|X|}
      \hline
      \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
-     \hline
-     \multicolumn{3}{|c|}{\textbf{Data Query Language (DQL)}} \\
-     \hline
-     SELECT & Table & Retrieve data from database tables \\
-     WHERE & Rows & Filter rows based on conditions \\
-     COUNT & Rows & Count number of rows \\
-     DISTINCT & Rows & Return unique values only \\
-     LIMIT & Result set & Restrict number of rows returned \\
-     OFFSET & Result set & Skip a specified number of rows \\
-     \hline
-     \multicolumn{3}{|c|}{\textbf{Data Manipulation Language (DML)}} \\
-     \hline
-     INSERT & Rows & Add new rows to a table \\
-     UPDATE & Rows & Modify existing rows \\
-     DELETE & Rows & Remove rows from a table \\
-     SET & Columns & Specify column values in UPDATE \\
+      \hline
+      \hyperref[frm:select]{SELECT} & Table & Retrieve data from database tables \\
+      \hyperref[frm:where]{WHERE} & Rows & Filter rows based on conditions \\
+      \hyperref[frm:select]{JOIN} & Tables & Combine rows from two or more tables \\
+      \hyperref[frm:groupby]{GROUP BY} & Rows & Group rows for aggregation \\
+      \hyperref[frm:having]{HAVING} & Groups & Filter groups after aggregation \\
+      \hyperref[frm:limit]{ORDER BY} & Result set & Sort results (ASC/DESC) \\
+      \hyperref[frm:count]{COUNT} & Rows & Count number of rows (aggregate) \\
+      \hyperref[frm:groupby]{SUM} & Rows & Sum values (aggregate) \\
+      \hyperref[frm:groupby]{AVG} & Rows & Average values (aggregate) \\
+      \hyperref[frm:groupby]{MIN} & Rows & Minimum value (aggregate) \\
+      \hyperref[frm:groupby]{MAX} & Rows & Maximum value (aggregate) \\
+      \hyperref[frm:distinct]{DISTINCT} & Rows & Return unique values only \\
+      \hyperref[frm:between]{BETWEEN} & Rows & Range selection (inclusive) \\
+      \hyperref[frm:in]{IN} & Rows & Match any value from a list or subquery \\
+      \hyperref[frm:like]{LIKE} & Rows & Pattern matching with wildcards \\
+      \hyperref[frm:regex]{REGEXP} & Rows & Regex pattern matching (DB-specific) \\
+      \hyperref[frm:limit]{LIMIT} & Result set & Restrict number of rows returned \\
+      \hyperref[frm:offset]{OFFSET} & Result set & Skip a specified number of rows \\
+      \hyperref[frm:aliases]{AS} & Columns/Expressions & Give an alias to a column or expression \\
+      \hyperref[frm:like]{ILIKE} & Rows & Case-insensitive LIKE (PostgreSQL) \\
      \hline
    \end{tabularx}
-   \endgroup
 \end{frame}
 
-\begin{frame}{SQL Commands Reference - Part 2}
-   \centering
+\begin{frame}{SQL Commands Reference - DML}
+   \large{\textcolor{secondcolor}{\textbf{DML}} $\Rightarrow$ Data Manipulation Language}
+   \vskip 1em
    \setstretch{1.2}
-   \begingroup
-   \fontsize{6}{7.5}\selectfont
+   \begin{tabularx}{\textwidth}{|l|l|X|}
+     \hline
+      \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
+     \hline
+   \hyperref[frm:insert]{INSERT} & Rows & Add new rows to a table \\
+   \hyperref[frm:update]{UPDATE} & Rows & Modify existing rows \\
+   \hyperref[frm:delete]{DELETE} & Rows & Remove rows from a table \\
+   \hyperref[frm:set]{SET} & Columns & Specify column values in UPDATE \\
+     \hline
+   \end{tabularx}
+\end{frame}
+
+\begin{frame}{SQL Commands Reference - DDL}
+   \large{\textcolor{secondcolor}{\textbf{DDL}} $\Rightarrow$ Data Definition Language}
+   \vskip 1em
+   \setstretch{1.2}
+   \fontsize{9}{11}\selectfont
    \begin{tabularx}{\textwidth}{|l|l|X|}
      \hline
      \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
      \hline
-     \multicolumn{3}{|c|}{\textbf{Data Definition Language (DDL)}} \\
-     \hline
-     CREATE & Table/DB & Create new database objects (tables, etc.) \\
-     ALTER & Table & Modify structure of existing objects \\
-     ADD & Column & Add new columns to existing table \\
-     DROP & Table/DB & Delete database objects permanently \\
-     TRUNCATE & Table & Remove all rows from table (keep structure) \\
-     RENAME & Table/Column & Rename tables or columns \\
-     MODIFY & Column & Change column definition (ALTER variant) \\
-     \hline
-     \multicolumn{3}{|c|}{\textbf{Constraints \& Options}} \\
-     \hline
-     NOT NULL & Column & Column must have a value (no NULL) \\
-     PRIMARY KEY & Column & Unique identifier for each row \\
-     FOREIGN KEY & Column & Link to PRIMARY KEY in another table \\
-     \hline
+      \hyperref[frm:create]{CREATE} & Table/DB & Create new database objects (tables, etc.) \\
+      \hyperref[frm:alter]{ALTER} & Table & Modify structure of existing objects \\
+      \hyperref[frm:add]{ADD} & Column & Add new columns to existing table \\
+      \hyperref[frm:drop]{DROP} & Table/DB & Delete database objects permanently \\
+      \hyperref[frm:truncate]{TRUNCATE} & Table & Remove all rows from table (keep structure) \\
+      \hyperref[frm:rename]{RENAME} & Table/Column & Rename tables or columns \\
+      \hyperref[frm:modify]{MODIFY} & Column & Change column definition (ALTER variant) \\
+      \hyperref[frm:setconstraints]{SET CONSTRAINTS} & Session & Control timing of constraint checks (IMMEDIATE/DEFERRED) \\
+      \hline
    \end{tabularx}
-   \endgroup
+\end{frame}
+
+\begin{frame}{SQL Commands Reference - DCL}
+   \large{\textcolor{secondcolor}{\textbf{DCL}} $\Rightarrow$ Data Control Language}
+   \vskip 1em
+   \setstretch{1.2}
+   \begin{tabularx}{\textwidth}{|l|l|X|}
+      \hline
+      GRANT & Permissions & Give privileges to users or roles \\
+      REVOKE & Permissions & Remove privileges from users or roles \\
+      \hline
+   \end{tabularx}
+\end{frame}
+
+\begin{frame}{SQL Commands Reference - Constraints \& Options}
+   \setstretch{1.2}
+   \begin{tabularx}{\textwidth}{|l|l|X|}
+     \hline
+      \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
+      \hline
+      \hyperref[frm:notnull]{NOT NULL} & Column & Column must have a value (no NULL) \\
+      \hyperref[frm:dbkeys]{PRIMARY KEY} & Column & Unique identifier for each row \\
+      \hyperref[frm:dbkeys]{FOREIGN KEY} & Column & Link to PRIMARY KEY in another table \\
+      \hyperref[frm:constraints]{UNIQUE} & Column & Enforce unique values in a column \\
+      \hyperref[frm:constraints]{CHECK} & Column & Custom condition that values must satisfy \\
+      \hyperref[frm:constraints]{DEFAULT} & Column & Default value when none provided \\
+      \hline
+   \end{tabularx}
 \end{frame}
 
 \section{SQL Key concepts}
 \sectionframe
 \begin{frame}{Database keys}
+\label{frm:dbkeys}
    \begin{block}{Primary Key}
       \begin{itemize}
          \item \textbf{Uniquely identifies} each row in a table
@@ -173,6 +217,7 @@
 \end{frame}
 
 \begin{frame}{Integrity Constraints}
+\label{frm:constraints}
    \begin{scriptsize}
    \begin{columns}[T]
       \begin{column}{0.46\textwidth}
@@ -272,6 +317,7 @@
 \section{Data Query Language (DQL)}
 \sectionframe
 \begin{frame}[fragile]{SELECT - Retrieve Data}
+\label{frm:select}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -303,6 +349,7 @@ FROM particles;
 \end{frame}
 
 \begin{frame}[fragile]{WHERE - Filter Rows}
+\label{frm:where}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -337,6 +384,7 @@ WHERE charge = 0
 \end{frame}
 
 \begin{frame}[fragile]{Pattern Matching - LIKE and Wildcards}
+\label{frm:like}
    \begin{columns}[T]
       \column{0.45\textwidth}
       	\textbf{Syntax:}
@@ -373,6 +421,7 @@ WHERE name ILIKE '%on%'; -- PostgreSQL
 \end{frame}
 
 \begin{frame}[fragile]{Advanced Patterns - Regex and Performance}
+\label{frm:regex}
    \begin{columns}[T]
       \column{0.45\textwidth}
       	\textbf{Regex Syntax (DB-specific):}
@@ -399,9 +448,10 @@ WHERE col ~* 'pattern'  -- case-insensitive
 \end{frame}
 
 \begin{frame}[fragile]{Range Selection - BETWEEN}
+\label{frm:between}
    \begin{columns}[T]
       \column{0.45\textwidth}
-      	extbf{Syntax:}
+      \textbf{Syntax:}
       \begin{lstlisting}[numbers=none]
 -- Inclusive range
 WHERE col BETWEEN low AND high
@@ -414,7 +464,7 @@ WHERE col NOT BETWEEN low AND high
       \end{lstlisting}
 
       \column{0.45\textwidth}
-      	extbf{Notes:}
+      \textbf{Notes:}
       \begin{itemize}
          \item `BETWEEN` is inclusive of both endpoints
          \item Works for numbers, dates, and strings (DB-specific ordering)
@@ -423,7 +473,7 @@ WHERE col NOT BETWEEN low AND high
    \end{columns}
 
    \vspace{1em}
-   	extbf{Examples:}
+   \textbf{Examples:}
    \begin{lstlisting}[numbers=none]
 SELECT * FROM experiments
 WHERE mass BETWEEN 10 AND 100;
@@ -435,9 +485,10 @@ WHERE start_date BETWEEN '2020-01-01' AND '2020-12-31';
 \end{frame}
 
 \begin{frame}[fragile]{Set Selection - IN and Subqueries}
+\label{frm:in}
    \begin{columns}[T]
       \column{0.45\textwidth}
-      	extbf{Syntax:}
+      \textbf{Syntax:}
       \begin{lstlisting}[numbers=none]
 -- Match any value in the list
 WHERE col IN (val1, val2, ...)
@@ -450,7 +501,7 @@ WHERE col NOT IN (val1, val2)
       \end{lstlisting}
 
       \column{0.45\textwidth}
-      	extbf{Notes:}
+      \textbf{Notes:}
       \begin{itemize}
          \item `IN` is shorthand for multiple ORs
          \item Subquery must return a single column
@@ -459,7 +510,7 @@ WHERE col NOT IN (val1, val2)
    \end{columns}
 
    \vspace{1em}
-   	extbf{Examples:}
+   \textbf{Examples:}
    \begin{lstlisting}[numbers=none]
 SELECT name FROM particles
 WHERE charge IN (-1, 0, 1);
@@ -472,6 +523,7 @@ WHERE experiment_id IN (
 \end{frame}
 
 \begin{frame}[fragile]{COUNT - Count Rows}
+\label{frm:count}
    \vspace*{-1.5em}
    \begin{columns}[T]
       \column{0.45\textwidth}
@@ -514,6 +566,7 @@ WHERE charge = 0;
 \end{frame}
 
 \begin{frame}[fragile]{DISTINCT - Unique Values}
+\label{frm:distinct}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -546,7 +599,92 @@ FROM particles;
    \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
 \end{frame}
 
+\begin{frame}[fragile]{GROUP BY - Aggregate Rows}
+\label{frm:groupby}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT column1, aggregate_function(column2)
+FROM table_name
+GROUP BY column1;
+
+-- Multiple grouping columns
+SELECT col1, col2, SUM(amount)
+FROM sales
+GROUP BY col1, col2;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Description:}
+      \begin{itemize}
+         \item Groups rows that share the same values for the grouped column(s)
+         \item Use with aggregate functions: COUNT, SUM, AVG, MIN, MAX
+         \item Useful to compute summaries per category (e.g., per customer)
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{COUNT and Aliases - Label Aggregates}
+\label{frm:aliases}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- Count rows per category and name the column
+SELECT category, COUNT(*) AS cnt
+FROM items
+GROUP BY category;
+
+-- Multiple aggregates
+SELECT user_id,
+       COUNT(*) AS num_orders,
+       SUM(total) AS total_spent
+FROM orders
+GROUP BY user_id;
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item `AS` gives a readable name to aggregate output columns
+         \item Aggregates ignore NULLs (except COUNT(*))
+         \item Use aliases in ORDER BY or in outer queries for clarity
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{HAVING - Filter Groups (vs WHERE)}
+\label{frm:having}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT category, COUNT(*) AS cnt
+FROM items
+GROUP BY category
+HAVING COUNT(*) > 10;
+
+-- Combining WHERE and HAVING
+SELECT user_id, SUM(amount) AS total
+FROM payments
+WHERE status = 'completed'   -- filters rows first
+GROUP BY user_id             -- then groups the filtered rows
+HAVING SUM(amount) > 1000;   -- filters groups by aggregate
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Key Differences:}
+      \begin{itemize}
+         \item WHERE filters raw rows before grouping
+         \item HAVING filters groups after aggregation
+         \item HAVING typically references aggregate functions
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
 \begin{frame}[fragile]{LIMIT - Restrict Result Set}
+\label{frm:limit}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -584,6 +722,7 @@ LIMIT 5;
 \end{frame}
 
 \begin{frame}[fragile]{OFFSET - Skip Rows}
+\label{frm:offset}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -623,6 +762,7 @@ OFFSET 20;
 \section{Data Manipulation Language (DML)}
 \sectionframe
 \begin{frame}[fragile]{INSERT - Add New Rows}
+\label{frm:insert}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -662,6 +802,7 @@ VALUES
 \end{frame}
 
 \begin{frame}[fragile]{UPDATE - Modify Existing Rows}
+\label{frm:update}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -694,6 +835,7 @@ WHERE name = 'muon';
 \end{frame}
 
 \begin{frame}[fragile]{SET - Assign Values (UPDATE)}
+\label{frm:set}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -723,6 +865,7 @@ WHERE exp_id = 42;
 \end{frame}
 
 \begin{frame}[fragile]{DELETE - Remove Rows}
+\label{frm:delete}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -752,10 +895,11 @@ DELETE FROM temp_data;
    \textbf{WARNING:} Without WHERE, \textbf{ALL rows deleted}! Cannot delete if foreign key constraints are violated. Use TRUNCATE for faster full-table deletion.
 \end{frame}
 
-% Section 6: Data Definition Language
+% Section: Data Definition Language
 \section{Data Definition Language (DDL)}
 \sectionframe
 \begin{frame}[fragile]{CREATE - Build New Objects}
+\label{frm:create}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -788,6 +932,7 @@ CREATE TABLE particles (
 \end{frame}
 
 \begin{frame}[fragile]{ADD - Add Columns to Table}
+\label{frm:add}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -831,6 +976,7 @@ ADD discovered DATE;
 \end{frame}
 
 \begin{frame}[fragile]{ALTER - Modify Table Structure}
+\label{frm:alter}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -872,6 +1018,7 @@ MODIFY mass FLOAT;
 \end{frame}
 
 \begin{frame}[fragile]{DROP - Delete Objects Permanently}
+\label{frm:drop}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -905,6 +1052,7 @@ DROP TABLE IF EXISTS
 \end{frame}
 
 \begin{frame}[fragile]{TRUNCATE - Empty Table Fast}
+\label{frm:truncate}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -929,6 +1077,7 @@ TRUNCATE TABLE temp_events;
 \end{frame}
 
 \begin{frame}[fragile]{RENAME - Rename Database Objects}
+\label{frm:rename}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -972,6 +1121,7 @@ RENAME COLUMN mass
 \end{frame}
 
 \begin{frame}[fragile]{MODIFY - Change Column Definition}
+\label{frm:modify}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -1009,6 +1159,7 @@ ALTER COLUMN mass
 \end{frame}
 
 \begin{frame}[fragile]{IMMEDIATE - Constraint Checking Mode}
+\label{frm:setconstraints}
    \begin{columns}[T]
       \column{0.45\textwidth}
       \textbf{Syntax:}
@@ -1041,10 +1192,11 @@ VALUES (1, 'test', 0, 0);
    \textbf{Note:} Not supported in all database systems (mainly DB2, Oracle). Useful for complex multi-table operations.
 \end{frame}
 
-% Section 7: Constraints
+% Section: Constraints
 \section{Constraints \& Optional Parameters}
 \sectionframe
 \begin{frame}[fragile]{NOT NULL - Require Values}
+\label{frm:notnull}
    \begin{small}
    \vspace*{-1em}
    \begin{columns}[T]

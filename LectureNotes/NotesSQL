@@ -1,0 +1,174 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{nav}{\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {1}{1}}}
+\@writefile{nav}{\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {2}{2}}}
+\@writefile{toc}{\beamer@sectionintoc {1}{\textcolor {white}{SQL Commands Cheatsheet}}{3}{0}{1}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {1}{2}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {1}{2}}}
+\@writefile{nav}{\headcommand {\sectionentry {1}{\textcolor {white}{SQL Commands Cheatsheet}}{3}{\textcolor {white}{SQL Commands Cheatsheet}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{1}{3/3}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {3}{3}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{2}{4/4}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {4}{4}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{3}{5/5}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {5}{5}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{4}{6/6}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {6}{6}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{5}{7/7}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {7}{7}}}
+\@writefile{nav}{\headcommand {\slideentry {1}{0}{6}{8/8}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {8}{8}}}
+\@writefile{toc}{\beamer@sectionintoc {2}{\textcolor {white}{SQL Key concepts}}{9}{0}{2}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {3}{8}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {3}{8}}}
+\@writefile{nav}{\headcommand {\sectionentry {2}{\textcolor {white}{SQL Key concepts}}{9}{\textcolor {white}{SQL Key concepts}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {2}{0}{1}{9/9}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {9}{9}}}
+\newlabel{frm:dbkeys}{{10}{10}{\textcolor {white}{SQL Key concepts}}{frm:dbkeys}{}}
+\@writefile{snm}{\beamer@slide {frm:dbkeys}{10}}
+\@writefile{nav}{\headcommand {\slideentry {2}{0}{2}{10/10}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {10}{10}}}
+\newlabel{frm:constraints}{{11}{11}{\textcolor {white}{SQL Key concepts}}{frm:constraints}{}}
+\@writefile{snm}{\beamer@slide {frm:constraints}{11}}
+\@writefile{nav}{\headcommand {\slideentry {2}{0}{3}{11/11}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {11}{11}}}
+\@writefile{nav}{\headcommand {\slideentry {2}{0}{4}{12/12}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {12}{12}}}
+\@writefile{toc}{\beamer@sectionintoc {3}{\textcolor {white}{Data Query Language (DQL)}}{13}{0}{3}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {9}{12}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {9}{12}}}
+\@writefile{nav}{\headcommand {\sectionentry {3}{\textcolor {white}{Data Query Language (DQL)}}{13}{\textcolor {white}{Data Query Language (DQL)}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{1}{13/13}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {13}{13}}}
+\newlabel{frm:select}{{14}{14}{\textcolor {white}{Data Query Language (DQL)}}{frm:select}{}}
+\@writefile{snm}{\beamer@slide {frm:select}{14}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{2}{14/14}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {14}{14}}}
+\newlabel{frm:where}{{15}{15}{\textcolor {white}{Data Query Language (DQL)}}{frm:where}{}}
+\@writefile{snm}{\beamer@slide {frm:where}{15}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{3}{15/15}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {15}{15}}}
+\newlabel{frm:like}{{16}{16}{\textcolor {white}{Data Query Language (DQL)}}{frm:like}{}}
+\@writefile{snm}{\beamer@slide {frm:like}{16}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{4}{16/16}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {16}{16}}}
+\newlabel{frm:regex}{{17}{17}{\textcolor {white}{Data Query Language (DQL)}}{frm:regex}{}}
+\@writefile{snm}{\beamer@slide {frm:regex}{17}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{5}{17/17}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {17}{17}}}
+\newlabel{frm:between}{{18}{18}{\textcolor {white}{Data Query Language (DQL)}}{frm:between}{}}
+\@writefile{snm}{\beamer@slide {frm:between}{18}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{6}{18/18}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {18}{18}}}
+\newlabel{frm:in}{{19}{19}{\textcolor {white}{Data Query Language (DQL)}}{frm:in}{}}
+\@writefile{snm}{\beamer@slide {frm:in}{19}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{7}{19/19}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {19}{19}}}
+\newlabel{frm:count}{{20}{20}{\textcolor {white}{Data Query Language (DQL)}}{frm:count}{}}
+\@writefile{snm}{\beamer@slide {frm:count}{20}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{8}{20/20}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {20}{20}}}
+\newlabel{frm:distinct}{{21}{21}{\textcolor {white}{Data Query Language (DQL)}}{frm:distinct}{}}
+\@writefile{snm}{\beamer@slide {frm:distinct}{21}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{9}{21/21}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {21}{21}}}
+\newlabel{frm:groupby}{{22}{22}{\textcolor {white}{Data Query Language (DQL)}}{frm:groupby}{}}
+\@writefile{snm}{\beamer@slide {frm:groupby}{22}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{10}{22/22}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {22}{22}}}
+\newlabel{frm:aliases}{{23}{23}{\textcolor {white}{Data Query Language (DQL)}}{frm:aliases}{}}
+\@writefile{snm}{\beamer@slide {frm:aliases}{23}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{11}{23/23}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {23}{23}}}
+\newlabel{frm:having}{{24}{24}{\textcolor {white}{Data Query Language (DQL)}}{frm:having}{}}
+\@writefile{snm}{\beamer@slide {frm:having}{24}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{12}{24/24}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {24}{24}}}
+\newlabel{frm:limit}{{25}{25}{\textcolor {white}{Data Query Language (DQL)}}{frm:limit}{}}
+\@writefile{snm}{\beamer@slide {frm:limit}{25}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{13}{25/25}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {25}{25}}}
+\newlabel{frm:offset}{{26}{26}{\textcolor {white}{Data Query Language (DQL)}}{frm:offset}{}}
+\@writefile{snm}{\beamer@slide {frm:offset}{26}}
+\@writefile{nav}{\headcommand {\slideentry {3}{0}{14}{26/26}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {26}{26}}}
+\@writefile{toc}{\beamer@sectionintoc {4}{\textcolor {white}{Data Manipulation Language (DML)}}{27}{0}{4}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {13}{26}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {13}{26}}}
+\@writefile{nav}{\headcommand {\sectionentry {4}{\textcolor {white}{Data Manipulation Language (DML)}}{27}{\textcolor {white}{Data Manipulation Language (DML)}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {4}{0}{1}{27/27}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {27}{27}}}
+\newlabel{frm:insert}{{28}{28}{\textcolor {white}{Data Manipulation Language (DML)}}{frm:insert}{}}
+\@writefile{snm}{\beamer@slide {frm:insert}{28}}
+\@writefile{nav}{\headcommand {\slideentry {4}{0}{2}{28/28}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {28}{28}}}
+\newlabel{frm:update}{{29}{29}{\textcolor {white}{Data Manipulation Language (DML)}}{frm:update}{}}
+\@writefile{snm}{\beamer@slide {frm:update}{29}}
+\@writefile{nav}{\headcommand {\slideentry {4}{0}{3}{29/29}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {29}{29}}}
+\newlabel{frm:set}{{30}{30}{\textcolor {white}{Data Manipulation Language (DML)}}{frm:set}{}}
+\@writefile{snm}{\beamer@slide {frm:set}{30}}
+\@writefile{nav}{\headcommand {\slideentry {4}{0}{4}{30/30}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {30}{30}}}
+\newlabel{frm:delete}{{31}{31}{\textcolor {white}{Data Manipulation Language (DML)}}{frm:delete}{}}
+\@writefile{snm}{\beamer@slide {frm:delete}{31}}
+\@writefile{nav}{\headcommand {\slideentry {4}{0}{5}{31/31}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {31}{31}}}
+\@writefile{toc}{\beamer@sectionintoc {5}{\textcolor {white}{Data Definition Language (DDL)}}{32}{0}{5}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {27}{31}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {27}{31}}}
+\@writefile{nav}{\headcommand {\sectionentry {5}{\textcolor {white}{Data Definition Language (DDL)}}{32}{\textcolor {white}{Data Definition Language (DDL)}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{1}{32/32}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {32}{32}}}
+\newlabel{frm:create}{{33}{33}{\textcolor {white}{Data Definition Language (DDL)}}{frm:create}{}}
+\@writefile{snm}{\beamer@slide {frm:create}{33}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{2}{33/33}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {33}{33}}}
+\newlabel{frm:add}{{34}{34}{\textcolor {white}{Data Definition Language (DDL)}}{frm:add}{}}
+\@writefile{snm}{\beamer@slide {frm:add}{34}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{3}{34/34}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {34}{34}}}
+\newlabel{frm:alter}{{35}{35}{\textcolor {white}{Data Definition Language (DDL)}}{frm:alter}{}}
+\@writefile{snm}{\beamer@slide {frm:alter}{35}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{4}{35/35}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {35}{35}}}
+\newlabel{frm:drop}{{36}{36}{\textcolor {white}{Data Definition Language (DDL)}}{frm:drop}{}}
+\@writefile{snm}{\beamer@slide {frm:drop}{36}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{5}{36/36}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {36}{36}}}
+\newlabel{frm:truncate}{{37}{37}{\textcolor {white}{Data Definition Language (DDL)}}{frm:truncate}{}}
+\@writefile{snm}{\beamer@slide {frm:truncate}{37}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{6}{37/37}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {37}{37}}}
+\newlabel{frm:rename}{{38}{38}{\textcolor {white}{Data Definition Language (DDL)}}{frm:rename}{}}
+\@writefile{snm}{\beamer@slide {frm:rename}{38}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{7}{38/38}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {38}{38}}}
+\newlabel{frm:modify}{{39}{39}{\textcolor {white}{Data Definition Language (DDL)}}{frm:modify}{}}
+\@writefile{snm}{\beamer@slide {frm:modify}{39}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{8}{39/39}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {39}{39}}}
+\newlabel{frm:setconstraints}{{40}{40}{\textcolor {white}{Data Definition Language (DDL)}}{frm:setconstraints}{}}
+\@writefile{snm}{\beamer@slide {frm:setconstraints}{40}}
+\@writefile{nav}{\headcommand {\slideentry {5}{0}{9}{40/40}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {40}{40}}}
+\@writefile{toc}{\beamer@sectionintoc {6}{\textcolor {white}{Constraints \& Optional Parameters}}{41}{0}{6}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {32}{40}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {32}{40}}}
+\@writefile{nav}{\headcommand {\sectionentry {6}{\textcolor {white}{Constraints \& Optional Parameters}}{41}{\textcolor {white}{Constraints \& Optional Parameters}}{0}}}
+\@writefile{nav}{\headcommand {\slideentry {6}{0}{1}{41/41}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {41}{41}}}
+\newlabel{frm:notnull}{{42}{42}{\textcolor {white}{Constraints \& Optional Parameters}}{frm:notnull}{}}
+\@writefile{snm}{\beamer@slide {frm:notnull}{42}}
+\@writefile{nav}{\headcommand {\slideentry {6}{0}{2}{42/42}{}{0}}}
+\@writefile{nav}{\headcommand {\beamer@framepages {42}{42}}}
+\@writefile{nav}{\headcommand {\beamer@partpages {1}{42}}}
+\@writefile{nav}{\headcommand {\beamer@subsectionpages {41}{42}}}
+\@writefile{nav}{\headcommand {\beamer@sectionpages {41}{42}}}
+\@writefile{nav}{\headcommand {\beamer@documentpages {42}}}
+\@writefile{nav}{\headcommand {\gdef \inserttotalframenumber {42}}}
+\gdef \@abspage@last{42}

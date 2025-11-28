@@ -111,10 +111,10 @@
       \hyperref[frm:having]{HAVING} & Groups & Filter groups after aggregation \\
       \hyperref[frm:limit]{ORDER BY} & Result set & Sort results (ASC/DESC) \\
       \hyperref[frm:count]{COUNT} & Rows & Count number of rows (aggregate) \\
-      \hyperref[frm:groupby]{SUM} & Rows & Sum values (aggregate) \\
-      \hyperref[frm:groupby]{AVG} & Rows & Average values (aggregate) \\
-      \hyperref[frm:groupby]{MIN} & Rows & Minimum value (aggregate) \\
-      \hyperref[frm:groupby]{MAX} & Rows & Maximum value (aggregate) \\
+      \hyperref[frm:sum]{SUM} & Rows & Sum values (aggregate) \\
+      \hyperref[frm:avg]{AVG} & Rows & Average values (aggregate) \\
+      \hyperref[frm:minmax]{MIN} & Rows & Minimum value (aggregate) \\
+      \hyperref[frm:minmax]{MAX} & Rows & Maximum value (aggregate) \\
       \hyperref[frm:distinct]{DISTINCT} & Rows & Return unique values only \\
       \hyperref[frm:between]{BETWEEN} & Rows & Range selection (inclusive) \\
       \hyperref[frm:in]{IN} & Rows & Match any value from a list or subquery \\
@@ -170,6 +170,8 @@
    \vskip 1em
    \setstretch{1.2}
    \begin{tabularx}{\textwidth}{|l|l|X|}
+      \hline
+      \textbf{Command} & \textbf{Applies to} & \textbf{Description} \\
       \hline
       GRANT & Permissions & Give privileges to users or roles \\
       REVOKE & Permissions & Remove privileges from users or roles \\
@@ -381,7 +383,7 @@ WHERE charge = 0
    \vspace{1em}
    \textbf{Description:} Filters rows based on specified conditions (like applying selection cuts in analysis).
    
-   \textbf{Operators:} =, <, >, <=, >=, <>, AND, OR, NOT, IN, LIKE, BETWEEN
+   \textbf{Operators:} \texttt{=}, \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}, \texttt{<>}, \texttt{AND}, \texttt{OR}, \texttt{NOT}, \texttt{IN}, \texttt{LIKE}, \texttt{BETWEEN}
 \end{frame}
 
 \begin{frame}[fragile]{Pattern Matching - LIKE and Wildcards}
@@ -446,6 +448,99 @@ WHERE col ~* 'pattern'  -- case-insensitive
    \end{columns}
    \vspace{1em}
    	\textbf{Use cases:} validation, structured codes, exploratory substring search.
+\end{frame}
+
+\begin{frame}[fragile]{String functions - Overview}
+\label{frm:stringfuncs}
+   \begin{itemize}
+      \item \textbf{Purpose:} manipulate, inspect and transform text values -- normalize, extract, format, and validate strings.
+      \item \textbf{Common categories:} case conversion, extraction (substring/position), modification (replace/concat), trimming, and searching/matching.
+      \item \textbf{Behavior notes:} function names and exact behavior vary by DB; prefer standard names (e.g. \texttt{LOWER}/\texttt{UPPER}) for portability. Collation/locale affects comparisons and case rules.
+      \item \textbf{NULLs:} many string functions return NULL when input is NULL -- handle explicitly with \texttt{COALESCE} when needed.
+      \item \textbf{Performance:} applying functions to table columns may prevent index use; consider functional/indexed expressions or storing normalized values for large-scale queries.
+      \item \textbf{Use-cases:} case-insensitive comparisons, parsing structured identifiers, cleaning user input, and preparing display-friendly text.
+   \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Case conversion - LCASE / UCASE}
+\label{frm:casefunc}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- MySQL
+SELECT LCASE(name), UCASE(name) FROM people;
+
+-- Standard SQL / PostgreSQL
+SELECT LOWER(name), UPPER(name) FROM people;
+
+-- Use in WHERE
+SELECT * FROM people
+WHERE LOWER(name) = 'alice';
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item LCASE/UCASE are MySQL aliases; standard functions are LOWER/UPPER.
+         \item Useful to normalize case for comparisons or grouping.
+         \item Applying functions to columns can prevent index usage -- consider functional/indexed expressions when available.
+      \end{itemize}
+   \end{columns}
+\end{frame}
+ 
+\begin{frame}[fragile]{Modification - CONCAT / REPLACE / TRIM}
+\label{frm:modstring}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- Concatenate (portable / MySQL)
+SELECT CONCAT(first_name, ' ', last_name) AS full_name FROM people;
+-- Alternatively (SQL standard / some DBs): first_name || ' ' || last_name
+
+-- Replace substrings
+SELECT REPLACE(notes, 'foo', 'bar') FROM logs;
+
+-- Trim whitespace
+SELECT TRIM(name) FROM people; -- LTRIM / RTRIM available
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item Concatenation operator/name varies by DB (use \texttt{CONCAT} for portability).
+         \item Use \texttt{TRIM}/\texttt{LTRIM}/\texttt{RTRIM} to clean input before comparisons.
+         \item \texttt{REPLACE} is literal-substring based; use regex functions for complex transformations.
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Locate / Search - POSITION / INSTR / CHARINDEX}
+\label{frm:locate}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- Standard SQL
+SELECT POSITION('sub' IN col) FROM t;
+
+-- MySQL
+SELECT INSTR(col, 'sub') FROM t;
+
+-- SQL Server
+SELECT CHARINDEX('sub', col) FROM t;
+      \end{lstlisting}
+
+      \column{0.45\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item Return semantics (0 vs 1-based) differ by DB--check docs.
+         \item Combine with \texttt{SUBSTRING} to extract surrounding text.
+         \item These functions are cheap per-row but can be costly at scale if used without supporting indexes or precomputed columns.
+      \end{itemize}
+   \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Range Selection - BETWEEN}
@@ -523,6 +618,55 @@ WHERE experiment_id IN (
    \end{lstlisting}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{DISTINCT - Unique Values}
+\label{frm:distinct}
+   \begin{columns}[T]
+      \column{0.45\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT column1
+FROM table_name;
+
+-- Multiple columns
+SELECT DISTINCT 
+   column1, column2
+FROM table_name;
+      \end{lstlisting}
+      
+      \column{0.45\textwidth}
+      \textbf{Example:}
+      \begin{lstlisting}[numbers=none]
+SELECT DISTINCT charge
+FROM particles;
+
+-- Unique combinations
+SELECT DISTINCT 
+   charge, spin
+FROM particles;
+      \end{lstlisting}
+   \end{columns}
+   
+   \vspace{1em}
+   \textbf{Description:} Returns only unique values, eliminating duplicates.
+   
+   \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
+\begin{frame}{Aggregations - Overview}
+\label{frm:aggregations}
+   \large{\textcolor{secondcolor}{\textbf{Aggregations}} $\Rightarrow$ Summarize multiple rows into single values}
+   \vskip 1em
+   \begin{itemize}
+      \item Aggregate functions compute a single result from a set of rows (overall or per-group).
+      \item Typically used with GROUP BY to produce summaries per category, or without GROUP BY to summarize the whole table.
+      \item Common aggregates: \hyperref[frm:count]{COUNT}, \hyperref[frm:minmax]{MIN}, \hyperref[frm:minmax]{MAX}, \hyperref[frm:avg]{AVG}, \hyperref[frm:sum]{SUM}.
+      \item Notes: aggregates generally ignore NULLs (COUNT(*) is the exception); use WHERE to filter rows before aggregation and HAVING to filter groups after aggregation.
+   \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{COUNT - Count Rows}
 \label{frm:count}
    \vspace*{-1.5em}
@@ -566,39 +710,96 @@ WHERE charge = 0;
    \textbf{Note:} COUNT(*) includes NULL values; COUNT(column) excludes NULLs.
 \end{frame}
 
-\begin{frame}[fragile]{DISTINCT - Unique Values}
-\label{frm:distinct}
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{MIN / MAX - Extremes}
+\label{frm:minmax}
    \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
+      \column{0.48\textwidth}
+      \textbf{Syntax / Examples:}
       \begin{lstlisting}[numbers=none]
-SELECT DISTINCT column1
-FROM table_name;
+-- Smallest / largest single value
+SELECT MIN(value_col) FROM table_name;
+SELECT MAX(value_col) FROM table_name;
 
--- Multiple columns
-SELECT DISTINCT 
-   column1, column2
-FROM table_name;
+-- Per-group extremes
+SELECT category,
+       MIN(price) AS min_price,
+       MAX(price) AS max_price
+FROM products
+GROUP BY category;
       \end{lstlisting}
-      
-      \column{0.45\textwidth}
-      \textbf{Example:}
-      \begin{lstlisting}[numbers=none]
-SELECT DISTINCT charge
-FROM particles;
 
--- Unique combinations
-SELECT DISTINCT 
-   charge, spin
-FROM particles;
-      \end{lstlisting}
+      \column{0.48\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item MIN returns the smallest non-NULL value; MAX returns the largest non-NULL value.
+         \item Applicable to numbers, dates, and strings (string order uses collation).
+         \item Use with GROUP BY to obtain extremes per group.
+         \item Leading indexes can help speed MIN/MAX queries when filtering by range.
+      \end{itemize}
    \end{columns}
-   
-   \vspace{1em}
-   \textbf{Description:} Returns only unique values, eliminating duplicates.
-   
-   \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
 \end{frame}
+
+\begin{frame}[fragile]{SUM - Total Values}
+\label{frm:sum}
+   \begin{columns}[T]
+      \column{0.48\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- Sum a column
+SELECT SUM(amount) FROM transactions;
+
+-- Sum per category
+SELECT category, SUM(quantity) AS total_qty
+FROM sales
+GROUP BY category;
+
+-- Treat NULL as zero
+SELECT SUM(COALESCE(quantity,0)) FROM sales;
+      \end{lstlisting}
+
+      \column{0.48\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item SUM ignores NULLs by default; use COALESCE to include NULLs as zeros.
+         \item Intended for numeric types; cast non-numeric values before summing.
+         \item Watch for integer overflow on very large totals--use an appropriate numeric type.
+         \item Combine with GROUP BY and HAVING to filter aggregated totals.
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{AVG - Averages}
+\label{frm:avg}
+   \begin{columns}[T]
+      \column{0.48\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none]
+-- Average of a column
+SELECT AVG(score) FROM results;
+
+-- Average per group
+SELECT team, AVG(points) AS avg_points
+FROM matches
+GROUP BY team;
+
+-- Weighted average (explicit)
+SELECT SUM(value * weight) / SUM(weight) AS weighted_avg
+FROM measurements;
+      \end{lstlisting}
+
+      \column{0.48\textwidth}
+      \textbf{Notes:}
+      \begin{itemize}
+         \item AVG returns the mean of non-NULL values; result is typically a fractional type.
+         \item For precise control, cast operands (e.g., to DECIMAL or DOUBLE).
+         \item To compute weighted averages, use SUM(...) / SUM(...).
+         \item Use ROUND() if you need a fixed number of decimal places.
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{GROUP BY - Aggregate Rows}
 \label{frm:groupby}
 \fontsize{8}{9}\selectfont
@@ -646,6 +847,7 @@ GROUP BY GROUPING SETS ((col1, col2), (col1), ());
    \end{columns}
 \end{frame}
 
+% ---------------------------------------------------------------------------------------
 \begin{frame}[fragile]{ORDER BY - Sort Results}
 \label{frm:orderby}
    \fontsize{7.5}{8}\selectfont
@@ -697,33 +899,54 @@ ORDER BY partition_col, rn;
    \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{COUNT and Aliases - Label Aggregates}
+% ---------------------------------------------------------------------------------------
+\begin{frame}[fragile]{Aliases - Rename Columns/Expressions}
 \label{frm:aliases}
+\fontsize{8}{9}\selectfont
    \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax / Examples:}
-      \begin{lstlisting}[numbers=none]
--- Count rows per category and name the column
-SELECT category, COUNT(*) AS cnt
-FROM items
-GROUP BY category;
+      \column{0.48\textwidth}
+      \textbf{Syntax:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
+-- Column alias (AS optional)
+SELECT column AS alias_name
+FROM table_name;
 
--- Multiple aggregates
-SELECT user_id,
-       COUNT(*) AS num_orders,
-       SUM(total) AS total_spent
-FROM orders
-GROUP BY user_id;
+-- Table alias (shorten long names)
+SELECT t.column
+FROM very_long_table_name AS t;
+
+-- Alias for derived table (required)
+SELECT d.*
+FROM (
+   SELECT id, SUM(value) AS total
+   FROM measurements
+   GROUP BY id
+) AS d;
       \end{lstlisting}
 
       \column{0.45\textwidth}
-      \textbf{Notes:}
-      \begin{itemize}
-         \item \texttt{AS} gives a readable name to aggregate output columns
-         \item Aggregates ignore NULLs (except COUNT(*))
-         \item Use aliases in ORDER BY or in outer queries for clarity
-      \end{itemize}
-   \end{columns}
+      \textbf{Examples:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{9}\selectfont]
+-- Rename expression
+SELECT CONCAT(first_name, ' ', last_name) AS full_name
+FROM people;
+
+-- Use alias in ORDER BY / GROUP BY
+SELECT product, SUM(qty) AS total_qty
+FROM sales
+GROUP BY product
+ORDER BY total_qty DESC;
+      \end{lstlisting}
+   \textbf{Notes:}
+   \begin{itemize}
+     \item AS is optional in many DBs: "SELECT col alias" works.
+     \item Use quotes/backticks for aliases with spaces or special chars.
+   \end{itemize}
+\end{columns}
+\begin{itemize}
+   \item Table aliases are mandatory for derived tables and helpful to disambiguate columns in joins.
+   \item Aliases are for the query result only -- they don't rename underlying schema objects.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{HAVING - Filter Groups (vs WHERE)}

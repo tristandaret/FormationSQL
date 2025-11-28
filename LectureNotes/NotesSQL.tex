@@ -22,6 +22,7 @@
 \setbeamercolor{structure}{fg=secondcolor}
 \setbeamercolor{frametitle}{bg=maincolor,fg=white}
 \setbeamercolor{title}{bg=maincolor,fg=white}
+\setbeamercolor{subtitle}{bg=maincolor,fg=white}
 \setbeamercolor{section in toc}{fg=white}
 \setbeamercolor{subsection in toc}{fg=secondcolor}
 
@@ -437,8 +438,8 @@ WHERE col ~* 'pattern'  -- case-insensitive
       \column{0.45\textwidth}
       	\textbf{Performance Notes:}
       \begin{itemize}
-         \item Leading \% (e.g., '%term') prevents index use
-         \item Prefer 'prefix%' patterns to leverage indexes
+         \item Leading \% (e.g., '\%term') prevents index use
+         \item Prefer 'prefix\%' patterns to leverage indexes
          \item Regex is more flexible but usually slower than LIKE
          \item For repeated workloads consider indexed/generated columns
       \end{itemize}
@@ -466,9 +467,9 @@ WHERE col NOT BETWEEN low AND high
       \column{0.45\textwidth}
       \textbf{Notes:}
       \begin{itemize}
-         \item `BETWEEN` is inclusive of both endpoints
+         \item \texttt{BETWEEN} is inclusive of both endpoints
          \item Works for numbers, dates, and strings (DB-specific ordering)
-         \item For exclusive bounds use `>`/`<` explicitly
+         \item For exclusive bounds use \texttt{>}/\texttt{<} explicitly
       \end{itemize}
    \end{columns}
 
@@ -503,9 +504,9 @@ WHERE col NOT IN (val1, val2)
       \column{0.45\textwidth}
       \textbf{Notes:}
       \begin{itemize}
-         \item `IN` is shorthand for multiple ORs
+         \item \texttt{IN} is shorthand for multiple ORs
          \item Subquery must return a single column
-         \item Beware `NULL` with `NOT IN` (can yield no rows) -- prefer `NOT EXISTS`
+         \item Beware \texttt{NULL} with \texttt{NOT IN} (can yield no rows) -- prefer \texttt{NOT EXISTS}
       \end{itemize}
    \end{columns}
 
@@ -598,30 +599,101 @@ FROM particles;
    
    \textbf{Note:} With multiple columns, DISTINCT applies to the \textit{combination} of values.
 \end{frame}
-
 \begin{frame}[fragile]{GROUP BY - Aggregate Rows}
 \label{frm:groupby}
+\fontsize{8}{9}\selectfont
    \begin{columns}[T]
-      \column{0.45\textwidth}
-      \textbf{Syntax:}
-      \begin{lstlisting}[numbers=none]
-SELECT column1, aggregate_function(column2)
+      \column{0.48\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{8.5}\selectfont]
+-- Basic grouping with one aggregate
+SELECT grouping_col, COUNT(*) AS cnt
 FROM table_name
-GROUP BY column1;
+GROUP BY grouping_col;
+
+-- Multiple aggregates
+SELECT col1, SUM(amount) AS total, AVG(score) AS avg_score
+FROM table_name
+GROUP BY col1;
 
 -- Multiple grouping columns
-SELECT col1, col2, SUM(amount)
-FROM sales
+SELECT col1, col2, SUM(value)
+FROM table_name
 GROUP BY col1, col2;
+
+-- Advanced: rollup / grouping sets (DB-specific)
+SELECT col1, col2, SUM(value)
+FROM table_name
+GROUP BY GROUPING SETS ((col1, col2), (col1), ());
       \end{lstlisting}
-      
-      \column{0.45\textwidth}
-      \textbf{Description:}
+
+      \column{0.48\textwidth}
+      \textbf{What GROUP BY does:}
       \begin{itemize}
-         \item Groups rows that share the same values for the grouped column(s)
-         \item Use with aggregate functions: COUNT, SUM, AVG, MIN, MAX
-         \item Useful to compute summaries per category (e.g., per customer)
+         \item Combines input rows into groups based on the values of the grouping column(s).
+         \item Produces one output row per distinct group; aggregate functions then compute summary values for each group.
       \end{itemize}
+
+      \vspace{0.5em}
+      \textbf{Key rules and notes:}
+      \begin{itemize}
+         \item Every output expression must be either a grouping column or an aggregate expression (standard SQL rule).
+         \item Aggregates ignore NULLs (except COUNT(*) which counts rows); NULLs compare equal for grouping purposes (NULLs form their own group).
+         \item \texttt{WHERE} filters rows \emph{before} grouping; \texttt{HAVING} filters groups \emph{after} aggregation.
+         \item Functional dependencies and some DB extensions may relax the strict "grouping column" rule (DB-specific behavior).
+         \item Use grouping extensions (\texttt{ROLLUP}, \texttt{CUBE}, \texttt{GROUPING SETS}) to produce subtotal/total rows.
+      \end{itemize}
+   \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{ORDER BY - Sort Results}
+\label{frm:orderby}
+   \fontsize{7.5}{8}\selectfont
+   \begin{columns}[T]
+      \begin{column}{0.48\textwidth}
+      \textbf{Syntax / Examples:}
+      \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{8}{8.5}\selectfont]
+-- Simple ordering
+SELECT col1, col2
+FROM table_name
+ORDER BY col1 ASC, col2 DESC;
+
+-- Order aggregated results (use alias or expression)
+SELECT category, SUM(amount) AS total
+FROM table_name
+GROUP BY category
+ORDER BY total DESC;
+
+-- Use NULLS FIRST / LAST (DB-specific)
+SELECT name FROM table_name
+ORDER BY score DESC NULLS LAST;
+
+-- Order by position (ordinal) instead of name
+SELECT col1, col2 FROM table_name
+ORDER BY 2, 1;  -- orders by col2 then col1
+         \end{lstlisting}
+      \end{column}
+
+      \begin{column}{0.48\textwidth}
+         \textbf{Behavior and best practices:}
+         \begin{itemize}
+         \item \texttt{ORDER BY} is performed after any \texttt{GROUP BY} and after projection of SELECT expressions.
+         \item You can order by column names, aliases, expressions, or column ordinals (position numbers).
+         \item Collation and locale affect sort order; be explicit when needed for reproducible results.
+         \item Large sorts can be expensive; use indexes or limit rows before sorting when possible.
+         \item Use \texttt{NULLS FIRST} / \texttt{NULLS LAST} when your DB supports them to control NULL ordering.
+         \end{itemize}
+
+         \vspace{0.5em}
+         \textbf{Ordering within groups (preserve rows + rank):}
+         \begin{lstlisting}[numbers=none,basicstyle=\ttfamily\fontsize{7}{7}\selectfont]
+-- Use window functions to rank/order rows inside partitions
+SELECT id, partition_col, value,
+       ROW_NUMBER() OVER (PARTITION BY partition_col ORDER BY value DESC) AS rn
+FROM table_name
+ORDER BY partition_col, rn;
+         \end{lstlisting}
+      \end{column}
    \end{columns}
 \end{frame}
 
@@ -647,7 +719,7 @@ GROUP BY user_id;
       \column{0.45\textwidth}
       \textbf{Notes:}
       \begin{itemize}
-         \item `AS` gives a readable name to aggregate output columns
+         \item \texttt{AS} gives a readable name to aggregate output columns
          \item Aggregates ignore NULLs (except COUNT(*))
          \item Use aliases in ORDER BY or in outer queries for clarity
       \end{itemize}
